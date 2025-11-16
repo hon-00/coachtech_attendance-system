@@ -1,0 +1,11 @@
+/vendor/
+/node_modules/
+/docker/mysql/data/
+
+.env
+.phpunit.result.cache
+/storage/logs/
+/storage/framework/sessions/
+/storage/framework/views/
+/storage/framework/cache/
+EOF
