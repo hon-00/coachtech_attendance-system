@@ -2,50 +2,45 @@
 
 namespace App\Providers;
 
-use App\Actions\Fortify\CreateNewUser;
-use App\Actions\Fortify\ResetUserPassword;
-use App\Actions\Fortify\UpdateUserPassword;
-use App\Actions\Fortify\UpdateUserProfileInformation;
-use Illuminate\Cache\RateLimiting\Limit;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\RateLimiter;
-use Illuminate\Support\ServiceProvider;
-use Illuminate\Support\Str;
-use App\Models\User;
-use App\Http\Requests\RegisterRequest;
-use Illuminate\Support\Facades\Hash;
-use Laravel\Fortify\Fortify;
 
+use Illuminate\Support\ServiceProvider;
+use Laravel\Fortify\Fortify;
+use Laravel\Fortify\Contracts\LoginResponse as LoginResponseContract;
+use Laravel\Fortify\Http\Requests\LoginRequest as FortifyLoginRequest;
+use App\Http\Requests\LoginRequest as CustomLoginRequest;
+use App\Http\Responses\LoginResponse as CustomLoginResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+use App\Models\User;
+use App\Actions\Fortify\CreateNewUser;
 
 class FortifyServiceProvider extends ServiceProvider
 {
-    /**
-     * Register any application services.
-     */
-    public function register(): void
+    public function register()
     {
-        //
+        $this->app->singleton(LoginResponseContract::class, CustomLoginResponse::class);
     }
 
-    /**
-     * Bootstrap any application services.
-     */
-    public function boot(): void
+    public function boot()
     {
-        Fortify::registerView(function () {
-            return view('auth.register');
-        });
+        Fortify::registerView(fn () => view('auth.register'));
+        Fortify::loginView(fn () => view('auth.login'));
 
         Fortify::createUsersUsing(CreateNewUser::class);
 
-        Fortify::loginView(function () {
-            return view('auth.login');
-        });
+        $this->app->bind(FortifyLoginRequest::class, CustomLoginRequest::class);
 
-        RateLimiter::for('login', function (Request $request) {
-            $email = (string) $request->email;
+        Fortify::authenticateUsing(function (Request $request) {
 
-            return Limit::perMinute(10)->by($email . $request->ip());
+            $user = User::where('email', $request->email)->first();
+
+            if ($user && Hash::check($request->password, $user->password)) {
+                return $user;
+            }
+
+            throw \Illuminate\Validation\ValidationException::withMessages([
+                'email' => 'ログイン情報が登録されていません',
+            ]);
         });
     }
 }
