@@ -10,6 +10,7 @@
     <h1 class="content-title">会員登録</h1>
     <form class="content-form" action="{{ route('register') }}" method="post">
         @csrf
+        <input type="hidden" name="role" value="0">
         <div class="form-group">
             <label class="form-item" for="name">名前</label>
             <input class="form-input" id="name" type="text" name="name" value="{{ old('name') }}">
