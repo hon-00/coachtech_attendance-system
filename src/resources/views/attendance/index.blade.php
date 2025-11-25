@@ -1,0 +1,84 @@
+@extends('layouts.app')
+
+@section('css')
+<link rel="stylesheet" href="{{ asset('css/attendance/index.css') }}">
+@endsection
+
+@section('content')
+<div class="content">
+        <!-- ステータス表示 -->
+    <p class="content-status">
+        @switch($attendance->status)
+            @case(\App\Models\Attendance::STATUS_NEW)
+                勤務外
+                @break
+            @case(\App\Models\Attendance::STATUS_WORKING)
+                出勤中
+                @break
+            @case(\App\Models\Attendance::STATUS_BREAK)
+                休憩中
+                @break
+            @case(\App\Models\Attendance::STATUS_LEAVE)
+                退勤済
+                @break
+        @endswitch
+    </p>
+
+    <!-- 日付表示 -->
+    @php
+        $weekMap = [
+            'Sun' => '日',
+            'Mon' => '月',
+            'Tue' => '火',
+            'Wed' => '水',
+            'Thu' => '木',
+            'Fri' => '金',
+            'Sat' => '土',
+        ];
+
+        $week = $weekMap[$currentTime->format('D')];
+    @endphp
+    <p class="content-date">{{ $currentTime->format('Y年m月d日') }}({{ $week }})</p>
+    <p class="content-time">{{ $currentTime->format('H:i') }}</p>
+
+
+
+    <!-- メッセージ -->
+    @if(session('error'))
+        <p class="content-error">{{ session('error') }}</p>
+    @endif
+
+    @if($attendance->status === \App\Models\Attendance::STATUS_LEAVE)
+        <p class="content-finish">お疲れ様でした。</p>
+    @endif
+
+    <!-- 打刻ボタン群 -->
+    <div class="content-actions">
+
+        @if($attendance->status === \App\Models\Attendance::STATUS_NEW)
+            <form class="content-actions__form" action="{{ route('attendance.clockIn') }}" method="POST">
+                @csrf
+                <button class="button" type="submit">出勤</button>
+            </form>
+
+        @elseif($attendance->status === \App\Models\Attendance::STATUS_WORKING)
+            <div class="content-actions__group">
+                <form class="content-actions__form" action="{{ route('attendance.clockOut') }}" method="POST">
+                    @csrf
+                    <button class="button" type="submit">退勤</button>
+                </form>
+
+                <form class="content-actions__form" action="{{ route('attendance.breakIn') }}" method="POST">
+                    @csrf
+                    <button class="button-white" type="submit">休憩入</button>
+                </form>
+            </div>
+        @elseif($attendance->status === \App\Models\Attendance::STATUS_BREAK)
+            <form class="content-actions__form" action="{{ route('attendance.breakOut') }}" method="POST">
+                @csrf
+                <button class="button-white" type="submit">休憩戻</button>
+            </form>
+        @endif
+    </div>
+</div>
+@endsection
