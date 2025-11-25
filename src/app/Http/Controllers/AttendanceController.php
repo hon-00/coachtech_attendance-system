@@ -28,7 +28,7 @@ class AttendanceController extends Controller
             }
         }
 
-        return view('attendance.index', [
+        return view('attendance.create', [
             'attendance' => $attendance,
             'currentTime' => now()
         ]);
@@ -74,7 +74,7 @@ class AttendanceController extends Controller
         $attendance->status = Attendance::STATUS_LEAVE; // 退勤済
         $attendance->save();
 
-        return redirect()->route('attendance.index');
+        return redirect()->route('attendance.create');
     }
 
     // 休憩入
@@ -97,7 +97,7 @@ class AttendanceController extends Controller
         $attendance->status = Attendance::STATUS_BREAK; // 休憩中
         $attendance->save();
 
-        return redirect()->route('attendance.index');
+        return redirect()->route('attendance.create');
     }
 
     // 休憩戻
@@ -129,6 +129,6 @@ class AttendanceController extends Controller
         $attendance->status = Attendance::STATUS_WORKING; // 出勤中に戻す
         $attendance->save();
 
-        return redirect()->route('attendance.index');
+        return redirect()->route('attendance.create');
     }
 }
