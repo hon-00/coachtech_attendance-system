@@ -15,12 +15,23 @@ use App\Http\Controllers\AttendanceController;
 */
 
 Route::middleware('auth')->group(function () {
-    // 打刻画面
-    Route::get('/attendance', [AttendanceController::class, 'index'])->name('attendance.create');
 
-    // 打刻アクション
-    Route::post('/attendance/clock-in', [AttendanceController::class, 'clockIn'])->name('attendance.clockIn');
-    Route::post('/attendance/clock-out', [AttendanceController::class, 'clockOut'])->name('attendance.clockOut');
-    Route::post('/attendance/break-in', [AttendanceController::class, 'breakIn'])->name('attendance.breakIn');
-    Route::post('/attendance/break-out', [AttendanceController::class, 'breakOut'])->name('attendance.breakOut');
+    Route::prefix('attendance')->group(function () {
+        Route::get('/', [AttendanceController::class, 'create'])
+                ->name('attendance.create');
+
+        // 打刻アクション
+        Route::post('/clock-in',  [AttendanceController::class, 'clockIn'])
+            ->name('attendance.clockIn');
+        Route::post('/clock-out', [AttendanceController::class, 'clockOut'])
+            ->name('attendance.clockOut');
+        Route::post('/break-in',  [AttendanceController::class, 'breakIn'])
+            ->name('attendance.breakIn');
+        Route::post('/break-out', [AttendanceController::class, 'breakOut'])
+            ->name('attendance.breakOut');
+
+        Route::get('/list', [AttendanceController::class, 'index'])
+            ->name('attendance.list');
+    });
+
 });
