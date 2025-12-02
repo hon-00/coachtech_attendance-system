@@ -9,7 +9,39 @@ use App\Models\BreakLog;
 
 class AttendanceController extends Controller
 {
-    public function index()
+
+    public function index(Request $request)
+    {
+        $user = $request->user();
+
+        $month = $request->query('month', now()->format('Y-m'));
+        $current = \Carbon\Carbon::createFromFormat('Y-m', $month)->startOfMonth();
+
+        $prevMonth = $current->copy()->subMonth()->format('Y-m');
+        $nextMonth = $current->copy()->addMonth()->format('Y-m');
+
+        $attendances = Attendance::where('user_id', $user->id)
+        ->whereYear('work_date', $current->year)
+        ->whereMonth('work_date', $current->month)
+        ->orderBy('work_date', 'asc')
+        ->get();
+
+        $attendances->each(function ($attendance) {
+            $attendance->totalBreakMinutes = $attendance->breakLogs
+                ->filter(fn($b) => $b->break_end)
+                ->sum(fn($b) => $b->break_end->diffInMinutes($b->break_start));
+        });
+
+        return view('attendance.index', [
+            'attendances' => $attendances,
+            'currentTime' => $current,
+            'month'       => $current->format('Y-m'),
+            'prevMonth'   => $prevMonth,
+            'nextMonth'   => $nextMonth,
+        ]);
+    }
+
+    public function create()
     {
         $user = Auth::user();
         $today = now()->format('Y-m-d');
@@ -53,7 +85,7 @@ class AttendanceController extends Controller
         $attendance->status = Attendance::STATUS_WORKING; // 出勤中
         $attendance->save();
 
-        return redirect()->route('attendance.index');
+        return redirect()->route('attendance.create');
     }
 
     // 退勤処理

@@ -40,3 +40,7 @@ button.header-nav__link {
 .header-nav__item:last-child {
     margin: 0 50px 0 15px;
 }
+
+body {
+    background-color: rgb(238, 238, 238);
+}
