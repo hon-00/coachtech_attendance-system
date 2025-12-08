@@ -6,7 +6,6 @@
     align-items: center;
 }
 
-
 .content-title {
     width: 900px;
     height: 35px;
@@ -140,4 +139,9 @@
 
 .content-table tr:last-child td {
     border-bottom: none;
+}
+
+.content-table__cell--detail-link {
+    text-decoration: none;
+    color:#000;
 }
