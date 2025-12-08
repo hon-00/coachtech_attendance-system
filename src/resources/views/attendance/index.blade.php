@@ -46,7 +46,11 @@
                 <td class="content-table__cell--end">{{ $attendance->clock_out?->format('H:i') ?? '' }}</td>
                 <td class="content-table__cell--break">{{ $attendance->formatted_break_total ?: '' }}</td>
                 <td class="content-table__cell--total">{{ $attendance->formatted_work_total ?: '' }}</td>
-                <td class="content-table__cell--detail">詳細</td>
+                <td class="content-table__cell--detail">
+                    <a class="content-table__cell--detail-link" href="{{ route('attendance.detail', ['id' => $attendance->id]) }}">
+                        詳細
+                    </a>
+                </td>
             </tr>
             @endforeach
         </tbody>

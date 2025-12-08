@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Attendance;
 use App\Models\BreakLog;
+use App\Models\AttendanceRequest;
+use Carbon\Carbon;
 
 class AttendanceController extends Controller
 {
@@ -162,5 +164,54 @@ class AttendanceController extends Controller
         $attendance->save();
 
         return redirect()->route('attendance.create');
+    }
+
+    public function show($id)
+    {
+        $attendance = Attendance::with('breakLogs')->findOrFail($id);
+
+    // 最新の申請を取得
+        $requestData = AttendanceRequest::where('attendance_id', $id)
+            ->latest()
+            ->first();
+
+        $hasOld = session()->hasOldInput();
+
+        $useRequestView = $requestData
+            && $requestData->status === AttendanceRequest::STATUS_PENDING
+            && ! $hasOld;
+
+        if ($useRequestView) {
+
+            $attendance->clock_in  = $requestData->clock_in
+                ? Carbon::parse($requestData->clock_in)
+                : null;
+
+            $attendance->clock_out = $requestData->clock_out
+                ? Carbon::parse($requestData->clock_out)
+                : null;
+
+        // 備考
+            $attendance->note = $requestData->note;
+
+        // 休憩
+            $breakArray = $requestData->breaks ?? [];
+
+            $attendance->setRelation('breakLogs', collect($breakArray)->map(function ($b) {
+                return (object)[
+                    'start' => !empty($b['start']) ? Carbon::parse($b['start']) : null,
+                    'end'   => !empty($b['end'])   ? Carbon::parse($b['end'])   : null,
+                ];
+            }));
+        }
+
+        $editable = ! ($requestData && $requestData->status === AttendanceRequest::STATUS_PENDING)
+                || $hasOld;
+
+        return view('attendance.show', [
+            'attendance'  => $attendance,
+            'requestData' => $requestData,
+            'editable'    => $editable,
+        ]);
     }
 }

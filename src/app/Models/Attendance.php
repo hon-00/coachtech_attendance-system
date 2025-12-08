@@ -13,6 +13,7 @@ class Attendance extends Model
     const STATUS_WORKING = 1;
     const STATUS_BREAK = 2;
     const STATUS_LEAVE = 3;
+    const STATUS_PENDING = 4;
 
     protected $fillable = [
         'user_id',
@@ -35,16 +36,14 @@ class Attendance extends Model
 
     public function breakLogs()
     {
-        return $this->hasMany(BreakLog::class);
+        return $this->hasMany(BreakLog::class)->orderBy('break_start', 'asc');
     }
 
     public function getTotalBreakSecondsAttribute()
     {
         return $this->breakLogs
-                    ->filter(fn($log) => $log->break_end)
-                    ->sum(function($log){
-                        return $log->break_end->diffInSeconds($log->break_start);
-                    });
+            ->filter(fn($log) => $log->break_start && $log->break_end)
+            ->sum(fn($log) => $log->break_end->diffInSeconds($log->break_start));
     }
 
     public function getFormattedBreakTotalAttribute()
@@ -84,6 +83,18 @@ class Attendance extends Model
         $mins  = $minutes % 60;
 
         return sprintf('%d:%02d', $hours, $mins);
+    }
+
+    public function requests()
+    {
+        return $this->hasMany(AttendanceRequest::class);
+    }
+
+    public function isPending()
+    {
+        return $this->requests()
+            ->where('status', AttendanceRequest::STATUS_PENDING)
+            ->exists();
     }
 
 }
