@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AttendanceController;
+use App\Http\Controllers\AttendanceRequestController;
 
 /*
 |--------------------------------------------------------------------------
@@ -20,7 +21,6 @@ Route::middleware('auth')->group(function () {
         Route::get('/', [AttendanceController::class, 'create'])
                 ->name('attendance.create');
 
-        // 打刻アクション
         Route::post('/clock-in',  [AttendanceController::class, 'clockIn'])
             ->name('attendance.clockIn');
         Route::post('/clock-out', [AttendanceController::class, 'clockOut'])
@@ -32,6 +32,11 @@ Route::middleware('auth')->group(function () {
 
         Route::get('/list', [AttendanceController::class, 'index'])
             ->name('attendance.list');
+
+        Route::get('/detail/{id}', [AttendanceController::class, 'show'])
+            ->name('attendance.detail');
+        Route::post('/request/{attendanceId}', [AttendanceRequestController::class, 'store'])
+            ->name('attendance.request.store');
     });
 
 });
