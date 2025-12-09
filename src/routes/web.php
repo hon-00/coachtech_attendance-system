@@ -39,4 +39,9 @@ Route::middleware('auth')->group(function () {
             ->name('attendance.request.store');
     });
 
+    Route::prefix('stamp_correction_request')->group(function () {
+        Route::get('/list', [AttendanceRequestController::class, 'index'])
+            ->name('attendance_request.index');
+    });
+
 });

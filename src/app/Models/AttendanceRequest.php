@@ -38,4 +38,14 @@ class AttendanceRequest extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function getStatusLabelAttribute()
+    {
+        return match($this->status) {
+            self::STATUS_PENDING  => '承認待ち',
+            self::STATUS_APPROVED => '承認済み',
+            self::STATUS_REJECTED => '否認',
+            default               => '不明',
+        };
+    }
 }

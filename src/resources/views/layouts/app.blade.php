@@ -26,7 +26,7 @@
                     <a class="header-nav__link" href="{{ route('attendance.list') }}">勤怠一覧</a>
                 </li>
                 <li class="header-nav__item">
-                    <p class="header-nav__link">申請</p>
+                    <a class="header-nav__link" href="{{ route('attendance_request.index') }}">申請</a>
                 </li>
                 @auth
                     <li class="header-nav__item">
