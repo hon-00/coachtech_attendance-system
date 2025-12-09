@@ -36,4 +36,28 @@ class AttendanceRequestController extends Controller
             ->with('success', '修正申請を受け付けました。');
     }
 
+    public function index(){
+        $userId = Auth::id();
+
+        $tab = request()->get('tab', 'pending');
+
+        $pendingRequests = AttendanceRequest::with(['attendance', 'user'])
+        ->where('user_id', $userId)
+        ->where('status', AttendanceRequest::STATUS_PENDING)
+        ->orderBy('created_at', 'asc')
+        ->get();
+
+        $approvedRequests = AttendanceRequest::with(['attendance', 'user'])
+        ->where('user_id', $userId)
+        ->where('status', AttendanceRequest::STATUS_APPROVED)
+        ->orderBy('created_at', 'asc')
+        ->get();
+
+        return view('attendance_request.index', [
+            'tab'              => $tab,
+            'pendingRequests'  => $pendingRequests,
+            'approvedRequests' => $approvedRequests,
+        ]);
+    }
+
 }
