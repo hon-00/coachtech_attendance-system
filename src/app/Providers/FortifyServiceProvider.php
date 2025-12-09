@@ -13,6 +13,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
 use App\Actions\Fortify\CreateNewUser;
+use Laravel\Fortify\Contracts\LogoutResponse;
 
 class FortifyServiceProvider extends ServiceProvider
 {
@@ -41,6 +42,13 @@ class FortifyServiceProvider extends ServiceProvider
             throw \Illuminate\Validation\ValidationException::withMessages([
                 'email' => 'ログイン情報が登録されていません',
             ]);
+        });
+
+        $this->app->instance(LogoutResponse::class, new class implements LogoutResponse {
+            public function toResponse($request)
+            {
+                return redirect()->route('login');
+            }
         });
     }
 }
