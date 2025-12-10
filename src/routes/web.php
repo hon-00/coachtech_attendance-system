@@ -3,6 +3,10 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\AttendanceRequestController;
+use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\Admin\LoginController as AdminLoginController;
+use App\Http\Controllers\Admin\AttendanceController as AdminAttendanceController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -19,7 +23,7 @@ Route::middleware('auth')->group(function () {
 
     Route::prefix('attendance')->group(function () {
         Route::get('/', [AttendanceController::class, 'create'])
-                ->name('attendance.create');
+            ->name('attendance.create');
 
         Route::post('/clock-in',  [AttendanceController::class, 'clockIn'])
             ->name('attendance.clockIn');
@@ -44,4 +48,22 @@ Route::middleware('auth')->group(function () {
             ->name('attendance_request.index');
     });
 
+});
+
+Route::prefix('admin')->group(function () {
+    Route::get('/login', [AdminLoginController::class, 'showLoginForm'])
+        ->name('admin.login');
+
+    Route::post('/login', [AdminLoginController::class, 'login'])
+        ->name('admin.login.submit');
+
+    Route::post('/logout', function () {
+        Auth::guard('admin')->logout();
+        return redirect()->route('admin.login');
+    })->name('admin.logout');
+});
+
+Route::middleware(['auth:admin', 'can:isAdmin'])->prefix('admin')->group(function () {
+    Route::get('/attendance/list', [AdminAttendanceController::class, 'index'])
+        ->name('admin.attendance.list');
 });

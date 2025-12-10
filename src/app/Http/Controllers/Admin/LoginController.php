@@ -18,7 +18,7 @@ class LoginController extends Controller
                 ->withInput();
         }
 
-        return redirect()->intended('/admin');
+        return redirect()->route('admin.attendance.list');
     }
 
 }
