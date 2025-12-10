@@ -36,4 +36,22 @@ class UserFactory extends Factory
             ];
         });
     }
+
+    public function normal()
+    {
+        return $this->state(fn(array $attributes) => [
+            'role' => 0,
+            'password' => bcrypt('user1234'),
+        ]);
+    }
+
+    public function admin()
+    {
+    return $this->state(fn(array $attributes) => [
+            'role' => 1,
+            'email' => 'admin@example.com',
+            'name' => '管理者',
+            'password' => bcrypt('admin1234'),
+        ]);
+    }
 }
