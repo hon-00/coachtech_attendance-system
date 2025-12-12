@@ -66,4 +66,10 @@ Route::prefix('admin')->group(function () {
 Route::middleware(['auth:admin', 'can:isAdmin'])->prefix('admin')->group(function () {
     Route::get('/attendance/list', [AdminAttendanceController::class, 'index'])
         ->name('admin.attendance.list');
+
+    Route::get('/attendance/{id}', [AdminAttendanceController::class, 'show'])
+        ->name('admin.attendance.show');
+
+    Route::put('/attendance/{id}', [AdminAttendanceController::class, 'update'])
+        ->name('admin.attendance.update');
 });
