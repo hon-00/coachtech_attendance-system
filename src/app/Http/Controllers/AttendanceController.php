@@ -199,8 +199,8 @@ class AttendanceController extends Controller
 
             $attendance->setRelation('breakLogs', collect($breakArray)->map(function ($b) {
                 return (object)[
-                    'start' => !empty($b['start']) ? Carbon::parse($b['start']) : null,
-                    'end'   => !empty($b['end'])   ? Carbon::parse($b['end'])   : null,
+                    'break_start' => !empty($b['start']) ? Carbon::parse($b['start']) : null,
+                    'break_end'   => !empty($b['end'])   ? Carbon::parse($b['end'])   : null,
                 ];
             }));
         }
