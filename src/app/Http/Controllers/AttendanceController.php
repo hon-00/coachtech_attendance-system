@@ -53,7 +53,7 @@ class AttendanceController extends Controller
             ['status' => Attendance::STATUS_NEW]
         );
 
-        $lastBreak = $attendance->breakLogs()->latest()->first();
+        $lastBreak = $attendance->breakLogs()->latest()->first();// 未終了の休憩が存在すれば、画面再読み込み時も休憩中として扱う
 
         if ($lastBreak && !$lastBreak->break_end) {
             if ($attendance->status !== Attendance::STATUS_BREAK) {
@@ -68,7 +68,6 @@ class AttendanceController extends Controller
         ]);
     }
 
-    // 出勤処理
     public function clockIn(Request $request)
     {
         $user = $request->user();
@@ -84,13 +83,12 @@ class AttendanceController extends Controller
         }
 
         $attendance->clock_in = now();
-        $attendance->status = Attendance::STATUS_WORKING; // 出勤中
+        $attendance->status = Attendance::STATUS_WORKING;
         $attendance->save();
 
         return redirect()->route('attendance.create');
     }
 
-    // 退勤処理
     public function clockOut(Request $request)
     {
         $user = $request->user();
@@ -105,13 +103,12 @@ class AttendanceController extends Controller
         }
 
         $attendance->clock_out = now();
-        $attendance->status = Attendance::STATUS_LEAVE; // 退勤済
+        $attendance->status = Attendance::STATUS_LEAVE;
         $attendance->save();
 
         return redirect()->route('attendance.create');
     }
 
-    // 休憩入
     public function breakIn(Request $request)
     {
         $user = $request->user();
@@ -128,13 +125,12 @@ class AttendanceController extends Controller
             'break_start' => now()
         ]);
 
-        $attendance->status = Attendance::STATUS_BREAK; // 休憩中
+        $attendance->status = Attendance::STATUS_BREAK;
         $attendance->save();
 
         return redirect()->route('attendance.create');
     }
 
-    // 休憩戻
     public function breakOut(Request $request)
     {
         $user = $request->user();
@@ -160,7 +156,7 @@ class AttendanceController extends Controller
             $lastBreak->update(['break_end' => $end]);
         }
 
-        $attendance->status = Attendance::STATUS_WORKING; // 出勤中に戻す
+        $attendance->status = Attendance::STATUS_WORKING;
         $attendance->save();
 
         return redirect()->route('attendance.create');
@@ -170,7 +166,6 @@ class AttendanceController extends Controller
     {
         $attendance = Attendance::with('breakLogs')->findOrFail($id);
 
-    // 最新の申請を取得
         $requestData = AttendanceRequest::where('attendance_id', $id)
             ->latest()
             ->first();
@@ -191,10 +186,8 @@ class AttendanceController extends Controller
                 ? Carbon::parse($requestData->clock_out)
                 : null;
 
-        // 備考
             $attendance->note = $requestData->note;
 
-        // 休憩
             $breakArray = $requestData->breaks ?? [];
 
             $attendance->setRelation('breakLogs', collect($breakArray)->map(function ($b) {
