@@ -32,14 +32,18 @@ class AttendanceController extends Controller
 
     public function show($id)
     {
-        $attendance = Attendance::with('user', 'breakLogs')->findOrFail($id);
-        $hasPendingRequest = $attendance->requests()
-            ->where('status', AttendanceRequest::STATUS_PENDING)
-            ->exists();
+        $attendance = Attendance::with('user', 'breakLogs','requests')->findOrFail($id);
+
+        $pendingRequest = $attendance->requests()
+        ->where('status', AttendanceRequest::STATUS_PENDING)
+        ->first();
+
+        $hasPendingRequest = $pendingRequest ? true : false;
 
         return view('admin.attendance.show', [
             'attendance' => $attendance,
             'locked' => $hasPendingRequest,
+            'pendingRequest' => $pendingRequest,
         ]);
     }
 
