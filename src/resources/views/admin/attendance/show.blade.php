@@ -91,13 +91,16 @@
             <div class="content-detail__row">
                 <label class="content-detail__label">備考</label>
 
-                @if($locked)
-                    <p class="content-detail__value--note">{{ $attendance->note }}</p>
+                @php
+                    $pendingRequest = $attendance->requests()
+                        ->where('status', \App\Models\AttendanceRequest::STATUS_PENDING)
+                        ->first();
+                @endphp
+
+                @if($pendingRequest)
+                    <p class="content-detail__value--note">{{ $pendingRequest->note }}</p>
                 @else
                     <textarea class="content-detail__textarea" name="note">{{ old('note', $attendance->note) }}</textarea>
-                    @error('note')
-                        <p class="content-form__error">{{ $message }}</p>
-                    @enderror
                 @endif
             </div>
         </div>
