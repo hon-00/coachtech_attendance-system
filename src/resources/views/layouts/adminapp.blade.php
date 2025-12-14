@@ -23,7 +23,7 @@
                     <a class="header-nav__link" href="{{ route('admin.attendance.list') }}">勤怠一覧</a>
                 </li>
                 <li class="header-nav__item">
-                    <p class="header-nav__link">スタッフ一覧</p>
+                    <a class="header-nav__link" href="{{ route('admin.user.index') }}">スタッフ一覧</a>
                 </li>
                 <li class="header-nav__item">
                     <p class="header-nav__link">申請一覧</p>

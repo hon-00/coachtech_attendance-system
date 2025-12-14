@@ -1,0 +1,96 @@
+.content {
+    max-width: 1450px;
+    margin: 80px auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.content-title {
+    width: 900px;
+    height: 35px;
+    margin-left: 30px;
+    margin-bottom: 40px;
+    display: flex;
+    font-size: 25px;
+    position: relative;
+}
+
+.content-title::before {
+    content: "";
+    position: absolute;
+    left: -20px;
+    top: 0;
+    width: 5px;
+    height: 100%;
+    border-left: 7px solid black;
+}
+
+.tab-list {
+    display: flex;
+    width: 900px;
+    border-bottom: 1.5px solid #555;
+    margin: 40px 0;
+    padding-left: 70px;
+    padding-bottom: 15px;
+    gap: 80px;
+}
+
+.tab-item {
+    font-size: 16px;
+    list-style: none;
+}
+
+.tab-link {
+    text-decoration: none;
+    color: black;
+}
+
+.tab-link.active {
+    font-weight: bolder;
+}
+
+.content-table {
+    width: 900px;
+    border-collapse: collapse;
+    background-color: white;
+    border-radius: 8px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    table-layout: fixed;
+}
+
+.content-table th,
+.content-table td {
+    color: dimgray;
+    border-bottom: 1.5px solid #ddd;
+    padding: 13px 0;
+    text-align: center;
+}
+
+.col-margin {
+    width: auto;
+}
+
+.col-name {
+    width: 120px;
+}
+
+.col-email {
+    width: 350px;
+}
+
+.col-detail {
+    width: 80px;
+}
+
+.content-table__header {
+    border-bottom: 3px solid #ddd;
+    font-size: 15px;
+    letter-spacing: 0.08em;
+}
+
+.content-table__cell--detail-link {
+    text-decoration: none;
+    color: #000;
+}

@@ -72,4 +72,7 @@ Route::middleware(['auth:admin', 'can:isAdmin'])->prefix('admin')->group(functio
 
     Route::put('/attendance/{id}', [AdminAttendanceController::class, 'update'])
         ->name('admin.attendance.update');
+
+    Route::get('/staff/list', [App\Http\Controllers\Admin\UserController::class, 'index'])
+        ->name('admin.user.index');
 });
