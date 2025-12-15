@@ -79,7 +79,7 @@
 .month-nav__next {
     margin-right: 50px;
     text-decoration: none;
-    color: dimgray;
+    color: gray;
     font-weight: 600;
     letter-spacing: 0.1em;
     font-size: 15px;
@@ -112,7 +112,7 @@
 
 .content-table th,
 .content-table td {
-    color: dimgray;
+    color: gray;
     border-bottom: 1.5px solid #ddd;
     padding: 13px 25px;
     padding-left: 50px;
@@ -131,10 +131,6 @@
 
 .th-narrow {
     width: 130px;
-}
-
-.content-table td.content-table__cell--detail {
-    color: #000;
 }
 
 .content-table tr:last-child td {
