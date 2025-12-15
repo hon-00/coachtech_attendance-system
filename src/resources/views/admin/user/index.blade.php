@@ -32,9 +32,9 @@
                 <td class="content-table__cell--name">{{ $user->name }}</td>
                 <td class="content-table__cell--email">{{ $user->email }}</td>
                 <td class="content-table__cell--detail">
-                    <p class="content-table__cell--detail-link">
+                    <a class="content-table__cell--detail-link" href="{{ route('admin.attendance.staff', ['id' => $user->id]) }}">
                         詳細
-                    </p>
+                    </a>
                 </td>
                 <td></td>
             </tr>
