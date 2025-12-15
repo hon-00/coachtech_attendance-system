@@ -63,7 +63,7 @@
 
 .content-table th,
 .content-table td {
-    color: dimgray;
+    color: gray;
     border-bottom: 1.5px solid #ddd;
     padding: 13px 0;
     padding-left: 40px;
@@ -100,16 +100,12 @@
     overflow-wrap: break-word;
 }
 
-.content-table td.content-table__cell--detail {
-    width: 35px;
-    color: #000;
-}
-
 .content-table tr:last-child td {
     border-bottom: none;
 }
 
 .content-table__cell--detail-link {
+    width: 35px;
     text-decoration: none;
     color: #000;
 }

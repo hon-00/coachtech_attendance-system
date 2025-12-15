@@ -62,7 +62,7 @@
 
 .content-table th,
 .content-table td {
-    color: dimgray;
+    color: gray;
     border-bottom: 1.5px solid #ddd;
     padding: 13px 0;
     text-align: center;
