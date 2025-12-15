@@ -28,20 +28,7 @@
         <tbody>
             @foreach($attendances as $attendance)
             <tr class="content-table__row">
-                    @php
-                    $weekMap = [
-                        'Sun' => '日',
-                        'Mon' => '月',
-                        'Tue' => '火',
-                        'Wed' => '水',
-                        'Thu' => '木',
-                        'Fri' => '金',
-                        'Sat' => '土',
-                    ];
-
-                    $week = $weekMap[$attendance->work_date->format('D')];
-                    @endphp
-                <td class="content-table__cell--date">{{ $attendance->work_date->format('m/d') }}({{ $week }})</td>
+                <td class="content-table__cell--date">{{ $attendance->work_date->format('m/d') }}({{ ['日','月','火','水','木','金','土'][$attendance->work_date->dayOfWeek] }})</td>
                 <td class="content-table__cell--start">{{ $attendance->clock_in?->format('H:i') ?? '' }}</td>
                 <td class="content-table__cell--end">{{ $attendance->clock_out?->format('H:i') ?? '' }}</td>
                 <td class="content-table__cell--break">{{ $attendance->formatted_break_total ?: '' }}</td>
