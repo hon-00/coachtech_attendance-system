@@ -6,7 +6,6 @@
     align-items: center;
 }
 
-/* ===== タイトル ===== */
 .content-title {
     width: 900px;
     height: 35px;
@@ -27,7 +26,6 @@
     border-left: 7px solid black;
 }
 
-/* ===== 月ナビ ===== */
 .month-nav {
     width: 900px;
     height: 60px;
@@ -119,7 +117,6 @@
     text-align: left;
 }
 
-/* ヘッダー行 */
 .content-table__header {
     border-bottom: 3px solid #ddd;
     font-size: 15px;

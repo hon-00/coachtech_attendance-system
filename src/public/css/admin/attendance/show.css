@@ -6,6 +6,12 @@
     align-items: center;
 }
 
+.alert-success {
+    width: 900px;
+    color: red;
+    text-align: left;
+}
+
 .content-title {
     width: 900px;
     height: 35px;
@@ -59,7 +65,7 @@
     width: 250px;
     margin-right: 70px;
     padding: 0 60px;
-    color: dimgray;
+    color: gray;
 }
 
 .content-form__error {
