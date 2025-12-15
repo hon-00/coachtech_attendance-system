@@ -1,0 +1,176 @@
+.content {
+    max-width: 1450px;
+    margin: 80px auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* ===== タイトル ===== */
+.content-title {
+    width: 900px;
+    height: 35px;
+    margin-left: 30px;
+    margin-bottom: 40px;
+    display: flex;
+    font-size: 25px;
+    position: relative;
+}
+
+.content-title::before {
+    content: "";
+    position: absolute;
+    left: -20px;
+    top: 0;
+    width: 5px;
+    height: 100%;
+    border-left: 7px solid black;
+}
+
+/* ===== 月ナビ ===== */
+.month-nav {
+    width: 900px;
+    height: 60px;
+    margin-bottom: 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: white;
+    border-radius: 8px;
+}
+
+.month-nav__prev {
+    margin-left: 50px;
+    text-decoration: none;
+    color: dimgray;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    font-size: 15px;
+    position: relative;
+}
+
+.month-nav__prev::before {
+    content: "";
+    position: absolute;
+    left: -20px;
+    top: 48%;
+    transform: translateY(-50%);
+    width: 15px;
+    height: 15px;
+    background: url("/images/arrow-left2.png") no-repeat;
+    background-size: contain;
+}
+
+.month-nav__current {
+    font-weight: bold;
+    font-size: 18px;
+}
+
+.month-nav__current::before {
+    content: "";
+    display: inline-block;
+    width: 28px;
+    height: 28px;
+    margin-right: 10px;
+    background: url("/images/calendar-icon.png") no-repeat;
+    background-size: contain;
+    vertical-align: middle;
+}
+
+.month-nav__next {
+    margin-right: 50px;
+    text-decoration: none;
+    color: dimgray;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    font-size: 15px;
+    position: relative;
+}
+
+.month-nav__next::after {
+    content: "";
+    position: absolute;
+    right: -20px;
+    top: 47%;
+    transform: translateY(-50%) rotate(180deg);
+    width: 15px;
+    height: 15px;
+    background: url("/images/arrow-left2.png") no-repeat;
+    background-size: contain;
+}
+
+.content-table {
+    width: 900px;
+    border-collapse: collapse;
+    background-color: white;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    table-layout: fixed;
+}
+
+.content-table th,
+.content-table td {
+    color: gray;
+    border-bottom: 1.5px solid #ddd;
+    padding: 13px 25px;
+    padding-left: 50px;
+    text-align: left;
+}
+
+/* ヘッダー行 */
+.content-table__header {
+    border-bottom: 3px solid #ddd;
+    font-size: 15px;
+}
+
+.content-table__date {
+    width: 160px;
+}
+
+.content-table__start,
+.content-table__end,
+.content-table__break,
+.content-table__total {
+    width: 110px;
+}
+
+.content-table__detail {
+    width: 140px;
+}
+
+.content-table__row {
+    font-size: 14px;
+}
+
+.content-table__cell--detail-link {
+    text-decoration: none;
+    color: #000;
+    font-size: 15px;
+}
+
+.content-table tr:last-child td {
+    border-bottom: none;
+}
+
+.content-action {
+    width: 900px;
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 25px;
+}
+
+.button--csv {
+    width: 140px;
+    height: 45px;
+    background: black;
+    color: white;
+    border-radius: 5px;
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-align: center;
+    line-height: 45px;
+    text-decoration: none;
+}
