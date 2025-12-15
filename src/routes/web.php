@@ -6,6 +6,7 @@ use App\Http\Controllers\AttendanceRequestController;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Admin\LoginController as AdminLoginController;
 use App\Http\Controllers\Admin\AttendanceController as AdminAttendanceController;
+use App\Http\Controllers\Admin\UserController;
 
 
 /*
@@ -63,16 +64,32 @@ Route::prefix('admin')->group(function () {
     })->name('admin.logout');
 });
 
-Route::middleware(['auth:admin', 'can:isAdmin'])->prefix('admin')->group(function () {
-    Route::get('/attendance/list', [AdminAttendanceController::class, 'index'])
-        ->name('admin.attendance.list');
+Route::middleware(['auth:admin', 'can:isAdmin'])->prefix('admin')->name('admin.')->group(function () {
+        Route::prefix('attendance')->name('attendance.')->group(function () {
 
-    Route::get('/attendance/{id}', [AdminAttendanceController::class, 'show'])
-        ->name('admin.attendance.show');
 
-    Route::put('/attendance/{id}', [AdminAttendanceController::class, 'update'])
-        ->name('admin.attendance.update');
+        Route::post('/create', [AdminAttendanceController::class, 'store'])->name('store');
 
-    Route::get('/staff/list', [App\Http\Controllers\Admin\UserController::class, 'index'])
-        ->name('admin.user.index');
+        Route::get('/list', [AdminAttendanceController::class, 'index'])
+            ->name('list');
+
+        Route::get('/staff/{id}', [AdminAttendanceController::class, 'staffMonthly'])
+            ->name('staff');
+
+        Route::get('/staff/{id}/csv', [AdminAttendanceController::class, 'exportCsv'])
+            ->name('staff.csv');
+
+        Route::get('/{attendance}', [AdminAttendanceController::class, 'show'])
+            ->name('show');
+
+        Route::put('/{attendance}', [AdminAttendanceController::class, 'update'])
+            ->name('update');
+
+        Route::get('/staff/{userId}/{date}', [AdminAttendanceController::class, 'showOrCreateByUserAndDate'])
+            ->name('staff.showOrCreate');
+
+    });
+
+    Route::get('/staff/list', [UserController::class, 'index'])
+        ->name('user.index');
 });

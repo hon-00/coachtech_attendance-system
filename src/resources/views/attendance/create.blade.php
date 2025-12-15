@@ -6,7 +6,6 @@
 
 @section('content')
 <div class="content">
-        <!-- ステータス表示 -->
     <p class="content-status">
         @switch($attendance->status)
             @case(\App\Models\Attendance::STATUS_NEW)
@@ -24,26 +23,9 @@
         @endswitch
     </p>
 
-    <!-- 日付表示 -->
-    @php
-        $weekMap = [
-            'Sun' => '日',
-            'Mon' => '月',
-            'Tue' => '火',
-            'Wed' => '水',
-            'Thu' => '木',
-            'Fri' => '金',
-            'Sat' => '土',
-        ];
-
-        $week = $weekMap[$currentTime->format('D')];
-    @endphp
-    <p class="content-date">{{ $currentTime->format('Y年m月d日') }}({{ $week }})</p>
+    <p class="content-date">{{ $currentTime->format('Y年m月d日') }}({{ ['日','月','火','水','木','金','土'][$currentTime->dayOfWeek] }})</p>
     <p class="content-time">{{ $currentTime->format('H:i') }}</p>
 
-
-
-    <!-- メッセージ -->
     @if(session('error'))
         <p class="content-error">{{ session('error') }}</p>
     @endif
@@ -52,7 +34,6 @@
         <p class="content-finish">お疲れ様でした。</p>
     @endif
 
-    <!-- 打刻ボタン群 -->
     <div class="content-actions">
 
         @if($attendance->status === \App\Models\Attendance::STATUS_NEW)
