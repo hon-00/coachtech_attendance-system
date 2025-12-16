@@ -44,7 +44,8 @@
                     {{ $attendance->formatted_work_total ?: '' }}
                 </td>
                 <td class="content-table__cell--detail">
-                    <a class="content-table__cell--detail-link" href="{{ route('admin.attendance.showOrCreate', $attendance->id) }}">
+                    <a class="content-table__cell--detail-link"
+                        href="{{ route('admin.attendance.show',  ['attendance' => $attendance->id]) }}">
                         詳細
                     </a>
                 </td>
