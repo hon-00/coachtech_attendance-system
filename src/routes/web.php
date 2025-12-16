@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Admin\LoginController as AdminLoginController;
 use App\Http\Controllers\Admin\AttendanceController as AdminAttendanceController;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\AttendanceRequestController as AdminAttendanceRequestController;
 
 
 /*
@@ -67,9 +68,6 @@ Route::prefix('admin')->group(function () {
 Route::middleware(['auth:admin', 'can:isAdmin'])->prefix('admin')->name('admin.')->group(function () {
         Route::prefix('attendance')->name('attendance.')->group(function () {
 
-
-        Route::post('/create', [AdminAttendanceController::class, 'store'])->name('store');
-
         Route::get('/list', [AdminAttendanceController::class, 'index'])
             ->name('list');
 
@@ -85,10 +83,15 @@ Route::middleware(['auth:admin', 'can:isAdmin'])->prefix('admin')->name('admin.'
         Route::put('/{attendance}', [AdminAttendanceController::class, 'update'])
             ->name('update');
 
-        Route::get('/staff/{userId}/{date}', [AdminAttendanceController::class, 'showOrCreateByUserAndDate'])
-            ->name('staff.showOrCreate');
+        Route::get('/attendance/create', [App\Http\Controllers\Admin\AttendanceController::class, 'create'])
+            ->name('create');
 
+        Route::post('/attendance/store', [AdminAttendanceController::class, 'store'])
+            ->name('store');
     });
+
+    Route::get('/attendance_request/list', [AdminAttendanceRequestController::class, 'index'])
+            ->name('attendance_request.index');
 
     Route::get('/staff/list', [UserController::class, 'index'])
         ->name('user.index');
