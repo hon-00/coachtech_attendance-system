@@ -52,30 +52,6 @@ class AttendanceController extends Controller
         ]);
     }
 
-    public function showOrCreateByUserAndDate($userId, $date)
-    {
-        $workDate = Carbon::parse($date)->format('Y-m-d');
-
-        $attendance = Attendance::firstOrNew([
-            'user_id' => $userId,
-            'work_date' => $workDate,
-        ]);
-
-        if (!$attendance->exists) {
-            $attendance->user_id = $userId;
-            $attendance->work_date = $date;
-        }
-
-        $pendingRequest = $attendance->exists
-            ? $attendance->requests()->where('status', AttendanceRequest::STATUS_PENDING)->first()
-            : null;
-
-        $locked = $pendingRequest ? true : false;
-        $isNew  = !$attendance->exists;
-
-        return view('admin.attendance.show', compact('attendance', 'locked', 'pendingRequest', 'isNew'));
-    }
-
     public function update(AdminUpdateAttendanceRequest $request, $id)
     {
         $attendance = Attendance::with('breakLogs')->findOrFail($id);
@@ -108,6 +84,24 @@ class AttendanceController extends Controller
             ->with('success', '勤怠情報を更新しました');
     }
 
+    public function create(Request $request)
+    {
+        $user = User::findOrFail($request->query('user_id'));
+        $date = $request->query('date', now()->toDateString());
+
+        $attendance = Attendance::firstOrNew([
+            'user_id' => $user->id,
+            'work_date' => $date,
+        ]);
+
+        return view('admin.attendance.show', [
+            'attendance' => $attendance,
+            'locked' => false,
+            'pendingRequest' => null,
+            'isNew' => true,
+        ]);
+    }
+
     public function store(AdminUpdateAttendanceRequest $request)
     {
         $dateOnly = Carbon::parse($request->work_date)->format('Y-m-d');
@@ -131,43 +125,31 @@ class AttendanceController extends Controller
 
         return redirect()
             ->route('admin.attendance.show', ['attendance' => $attendance->id])
-            ->with('success', '勤怠情報を作成した');
+            ->with('success', '勤怠情報を作成しました');
     }
 
     public function staffMonthly(Request $request, $id)
     {
-        $month = $request->input('month', now()->format('Y-m'));
-        $start = Carbon::parse($month . '-01')->startOfMonth();
-        $end   = $start->copy()->endOfMonth();
-        $prevMonth = $start->copy()->subMonth()->format('Y-m');
-        $nextMonth = $start->copy()->addMonth()->format('Y-m');
+        $user = User::findOrFail($id);
 
-        $period = CarbonPeriod::create($start, $end);
+        $date = $request->query('date', now()->toDateString());
 
-        $attendances = Attendance::with('breakLogs')
-            ->where('user_id', $id)
-            ->whereBetween('work_date', [$start, $end])
-            ->get()
-            ->keyBy(fn($a) => $a->work_date->format('Y-m-d'));
-
-        foreach ($period as $date) {
-            $attendances[$date->format('Y-m-d')] ??= new Attendance([
-                'work_date' => $date,
-                'clock_in' => null,
-                'clock_out' => null,
-                'formatted_break_total' => null,
-                'formatted_work_total' => null,
-            ]);
-        }
-
-        return view('admin.user.attendance', [
-            'user' => User::findOrFail($id),
-            'period' => $period,
-            'attendances' => $attendances,
-            'month' => $month,
-            'prevMonth' => $prevMonth,
-            'nextMonth' => $nextMonth,
+        $attendance = Attendance::firstOrNew([
+            'user_id' => $user->id,
+            'work_date' => $date,
         ]);
+
+        $month = $request->query('month', now()->format('Y-m'));
+        $period = \Carbon\Carbon::parse($month)->daysUntil(\Carbon\Carbon::parse($month)->endOfMonth());
+        $prevMonth = Carbon::parse($month . '-01')->subMonth()->format('Y-m');
+        $nextMonth = Carbon::parse($month . '-01')->addMonth()->format('Y-m');
+
+        $attendances = Attendance::where('user_id', $user->id)
+            ->whereMonth('work_date', \Carbon\Carbon::parse($month)->month)
+            ->get()
+            ->keyBy(fn($a) => $a->work_date->toDateString());
+
+        return view('admin.user.attendance', compact('user', 'attendance', 'period', 'attendances', 'month', 'prevMonth', 'nextMonth'));
     }
 
     public function exportCsv(Request $request, $id)
