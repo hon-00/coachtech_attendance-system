@@ -11,7 +11,8 @@
     </h1>
 
     <div class="month-nav">
-        <a class="month-nav__prev" href="{{ route('admin.attendance.staff', ['id' => $user->id, 'month' => $prevMonth]) }}">
+        <a class="month-nav__prev"
+            href="{{ route('admin.attendance.staff', ['id' => $user->id, 'month' => $prevMonth]) }}">
             前月
         </a>
 
@@ -19,7 +20,8 @@
             {{ \Carbon\Carbon::parse($month)->format('Y/m') }}
         </p>
 
-        <a class="month-nav__next" href="{{ route('admin.attendance.staff', ['id' => $user->id, 'month' => $nextMonth]) }}">
+        <a class="month-nav__next"
+            href="{{ route('admin.attendance.staff', ['id' => $user->id, 'month' => $nextMonth]) }}">
             翌月
         </a>
     </div>
@@ -59,10 +61,15 @@
                         {{ $attendance?->formatted_work_total ?? '' }}
                     </td>
                     <td class="content-table__cell--detail">
-                        <a class="content-table__cell--detail-link" href="{{ route('admin.attendance.staff.showOrCreate', [
-                            'userId' => $user->id,
-                            'date' => $day->format('Y-m-d')
-                        ]) }}">詳細</a>
+                        @if($attendance)
+                            <a class="content-table__cell--detail-link" href="{{ route('admin.attendance.show', ['attendance' => $attendance->id]) }}">
+                                詳細
+                            </a>
+                        @else
+                            <a class="content-table__cell--detail-link" href="{{ route('admin.attendance.create', ['user_id' => $user->id, 'date' => $day->toDateString()]) }}">
+                                詳細
+                            </a>
+                        @endif
                     </td>
                 </tr>
             @endforeach
@@ -70,7 +77,8 @@
     </table>
 
     <div class="content-action">
-        <a class="button button--csv" href="{{ route('admin.attendance.staff.csv', ['id' => $user->id, 'month' => $month]) }}">
+        <a class="button button--csv"
+            href="{{ route('admin.attendance.staff.csv', ['id' => $user->id, 'month' => $month]) }}">
             CSV出力
         </a>
     </div>
