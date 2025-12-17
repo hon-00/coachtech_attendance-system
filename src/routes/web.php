@@ -70,22 +70,17 @@ Route::middleware(['auth:admin', 'can:isAdmin'])->prefix('admin')->name('admin.'
 
         Route::get('/list', [AdminAttendanceController::class, 'index'])
             ->name('list');
-
         Route::get('/staff/{id}', [AdminAttendanceController::class, 'staffMonthly'])
             ->name('staff');
-
         Route::get('/staff/{id}/csv', [AdminAttendanceController::class, 'exportCsv'])
             ->name('staff.csv');
 
         Route::get('/{attendance}', [AdminAttendanceController::class, 'show'])
             ->name('show');
-
         Route::put('/{attendance}', [AdminAttendanceController::class, 'update'])
             ->name('update');
-
         Route::get('/attendance/create', [App\Http\Controllers\Admin\AttendanceController::class, 'create'])
             ->name('create');
-
         Route::post('/attendance/store', [AdminAttendanceController::class, 'store'])
             ->name('store');
     });
@@ -95,4 +90,14 @@ Route::middleware(['auth:admin', 'can:isAdmin'])->prefix('admin')->name('admin.'
 
     Route::get('/staff/list', [UserController::class, 'index'])
         ->name('user.index');
+
+    Route::get(
+        '/attendance_request/approve/{attendance_correct_request}',
+        [AdminAttendanceRequestController::class, 'show']
+    )->name('attendance_request.show');
+    Route::post(
+        '/attendance_request/approve/{attendance_correct_request}',
+        [AdminAttendanceRequestController::class, 'approve']
+    )->name('attendance_request.approve');
+
 });
