@@ -79,9 +79,9 @@ Route::middleware(['auth:admin', 'can:isAdmin'])->prefix('admin')->name('admin.'
             ->name('show');
         Route::put('/{attendance}', [AdminAttendanceController::class, 'update'])
             ->name('update');
-        Route::get('/attendance/create', [App\Http\Controllers\Admin\AttendanceController::class, 'create'])
+        Route::get('/create', [App\Http\Controllers\Admin\AttendanceController::class, 'create'])
             ->name('create');
-        Route::post('/attendance/store', [AdminAttendanceController::class, 'store'])
+        Route::post('/store', [AdminAttendanceController::class, 'store'])
             ->name('store');
     });
 
