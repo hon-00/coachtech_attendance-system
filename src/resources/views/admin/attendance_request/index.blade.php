@@ -58,7 +58,7 @@
                             </td>
                             <td class="content-table__cell--detail">
                                 <a class="content-table__cell--detail-link"
-                                    href="{{ route('admin.attendance.show', ['attendance' => $request->attendance->id]) }}">
+                                    href="{{ route('admin.attendance_request.show', ['attendance_correct_request' => $request->id]) }}">
                                     詳細
                                 </a>
                             </td>
@@ -98,7 +98,7 @@
                             </td>
                             <td class="content-table__cell--detail">
                                 <a class="content-table__cell--detail-link"
-                                    href="{{ route('admin.attendance.show', ['attendance' => $request->attendance->id]) }}">
+                                    href="{{ route('admin.attendance_request.show', ['attendance_correct_request' => $request->id]) }}">
                                     詳細
                                 </a>
                             </td>
