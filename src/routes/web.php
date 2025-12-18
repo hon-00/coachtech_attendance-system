@@ -75,14 +75,14 @@ Route::middleware(['auth:admin', 'can:isAdmin'])->prefix('admin')->name('admin.'
         Route::get('/staff/{id}/csv', [AdminAttendanceController::class, 'exportCsv'])
             ->name('staff.csv');
 
-        Route::get('/{attendance}', [AdminAttendanceController::class, 'show'])
-            ->name('show');
-        Route::put('/{attendance}', [AdminAttendanceController::class, 'update'])
-            ->name('update');
         Route::get('/create', [App\Http\Controllers\Admin\AttendanceController::class, 'create'])
             ->name('create');
         Route::post('/store', [AdminAttendanceController::class, 'store'])
             ->name('store');
+        Route::get('/{attendance}', [AdminAttendanceController::class, 'show'])
+            ->name('show');
+        Route::put('/{attendance}', [AdminAttendanceController::class, 'update'])
+            ->name('update');
     });
 
     Route::get('/attendance_request/list', [AdminAttendanceRequestController::class, 'index'])
