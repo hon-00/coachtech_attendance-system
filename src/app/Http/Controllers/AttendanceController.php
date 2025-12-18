@@ -22,20 +22,22 @@ class AttendanceController extends Controller
         $prevMonth = $current->copy()->subMonth()->format('Y-m');
         $nextMonth = $current->copy()->addMonth()->format('Y-m');
 
-        $attendances = Attendance::where('user_id', $user->id)
-        ->whereYear('work_date', $current->year)
-        ->whereMonth('work_date', $current->month)
-        ->orderBy('work_date', 'asc')
-        ->get();
+        $days = collect();
+        for ($d = $current->copy(); $d->month === $current->month; $d->addDay()) {
+            $days->push($d->copy());
+        }
 
-        $attendances->each(function ($attendance) {
-            $attendance->totalBreakMinutes = $attendance->breakLogs
-                ->filter(fn($b) => $b->break_end)
-                ->sum(fn($b) => $b->break_end->diffInMinutes($b->break_start));
-        });
+        $attendances = Attendance::with('breakLogs')
+            ->where('user_id', $user->id)
+            ->whereYear('work_date', $current->year)
+            ->whereMonth('work_date', $current->month)
+            ->get();
+
+        $attendancesByDate = $attendances->keyBy(fn ($a) => $a->work_date->toDateString());
 
         return view('attendance.index', [
-            'attendances' => $attendances,
+            'days'              => $days,
+            'attendancesByDate' => $attendancesByDate,
             'currentTime' => $current,
             'month'       => $current->format('Y-m'),
             'prevMonth'   => $prevMonth,
@@ -162,11 +164,27 @@ class AttendanceController extends Controller
         return redirect()->route('attendance.create');
     }
 
-    public function show($id)
+    public function show(Request $request, $id)
     {
-        $attendance = Attendance::with('breakLogs')->findOrFail($id);
+        $user = $request->user();
+        $date = $request->query('date', now()->toDateString());
 
-        $requestData = AttendanceRequest::where('attendance_id', $id)
+        if ($id === 'new') {
+            $date = $request->query('date');
+
+            $attendance = Attendance::firstOrCreate(
+                ['user_id' => $user->id, 'work_date' => $date],
+                ['status' => Attendance::STATUS_NEW]
+            );
+            $isNew = true;
+        } else {
+            $attendance = Attendance::where('user_id', $user->id)
+                ->with('breakLogs')
+                ->findOrFail($id);
+            $isNew = false;
+        }
+
+        $requestData = AttendanceRequest::where('attendance_id',  $attendance->id)
             ->latest()
             ->first();
 
@@ -177,19 +195,15 @@ class AttendanceController extends Controller
             && ! $hasOld;
 
         if ($useRequestView) {
-
             $attendance->clock_in  = $requestData->clock_in
                 ? Carbon::parse($requestData->clock_in)
                 : null;
-
             $attendance->clock_out = $requestData->clock_out
                 ? Carbon::parse($requestData->clock_out)
                 : null;
-
             $attendance->note = $requestData->note;
 
             $breakArray = $requestData->breaks ?? [];
-
             $attendance->setRelation('breakLogs', collect($breakArray)->map(function ($b) {
                 return (object)[
                     'break_start' => !empty($b['start']) ? Carbon::parse($b['start']) : null,
@@ -198,13 +212,13 @@ class AttendanceController extends Controller
             }));
         }
 
-        $editable = ! ($requestData && $requestData->status === AttendanceRequest::STATUS_PENDING)
-                || $hasOld;
+        $editable = ! ($requestData && $requestData->status === AttendanceRequest::STATUS_PENDING) || $hasOld;
 
         return view('attendance.show', [
             'attendance'  => $attendance,
             'requestData' => $requestData,
             'editable'    => $editable,
+            'isNew' => $isNew,
         ]);
     }
 }
