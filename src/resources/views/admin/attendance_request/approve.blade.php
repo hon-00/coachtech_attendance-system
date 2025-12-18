@@ -47,9 +47,11 @@
                 </label>
 
                 <p class="content-detail__value">
-                    {{ $break['break_start'] ?? '' }}
-                    <span class="content-detail__value--time">〜</span>
-                    {{ $break['break_end'] ?? '' }}
+                    {{ $break['start'] ?? '' }}
+                        @if(!empty($break['start']) && !empty($break['end']))
+                            <span class="content-detail__value--time">〜</span>
+                        @endif
+                    {{ $break['end'] ?? '' }}
                 </p>
             </div>
         @endforeach
