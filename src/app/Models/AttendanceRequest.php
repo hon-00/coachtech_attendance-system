@@ -48,4 +48,26 @@ class AttendanceRequest extends Model
             default               => '不明',
         };
     }
+
+    public function getBreaksAttribute($value)
+    {
+        if (is_array($value)) {
+            return $value;
+        }
+
+        if (is_string($value)) {
+            $decoded = json_decode($value, true);
+
+            if (is_array($decoded)) {
+            return array_map(function($b) {
+                return [
+                    'start' => $b['break_start'] ?? $b['start'] ?? null,
+                    'end'   => $b['break_end']   ?? $b['end'] ?? null,
+                ];
+            }, $decoded);
+        }
+        }
+
+        return [];
+    }
 }
