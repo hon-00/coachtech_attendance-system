@@ -16,33 +16,32 @@ class AttendanceController extends Controller
     {
         $user = $request->user();
 
-        $month = $request->query('month', now()->format('Y-m'));
-        $current = \Carbon\Carbon::createFromFormat('Y-m', $month)->startOfMonth();
+        $monthParam = $request->get('month', now()->format('Y-m'));
+        $currentTime = Carbon::parse($monthParam . '-01');
+        $prevMonth = $currentTime->copy()->subMonth()->format('Y-m');
+        $nextMonth = $currentTime->copy()->addMonth()->format('Y-m');
 
-        $prevMonth = $current->copy()->subMonth()->format('Y-m');
-        $nextMonth = $current->copy()->addMonth()->format('Y-m');
-
-        $days = collect();
-        for ($d = $current->copy(); $d->month === $current->month; $d->addDay()) {
-            $days->push($d->copy());
+        $days = [];
+        $start = $currentTime->copy()->startOfMonth();
+        $end   = $currentTime->copy()->endOfMonth();
+        while ($start->lte($end)) {
+            $days[] = $start->copy();
+            $start->addDay();
         }
 
-        $attendances = Attendance::with('breakLogs')
-            ->where('user_id', $user->id)
-            ->whereYear('work_date', $current->year)
-            ->whereMonth('work_date', $current->month)
-            ->get();
+        $attendances = Attendance::where('user_id', $user->id)
+            ->whereYear('work_date', $currentTime->year)
+            ->whereMonth('work_date', $currentTime->month)
+            ->get()
+            ->keyBy(fn($a) => $a->work_date->format('Y-m-d'));
 
-        $attendancesByDate = $attendances->keyBy(fn ($a) => $a->work_date->toDateString());
-
-        return view('attendance.index', [
-            'days'              => $days,
-            'attendancesByDate' => $attendancesByDate,
-            'currentTime' => $current,
-            'month'       => $current->format('Y-m'),
-            'prevMonth'   => $prevMonth,
-            'nextMonth'   => $nextMonth,
-        ]);
+        return view('attendance.index', compact(
+            'prevMonth',
+            'nextMonth',
+            'currentTime',
+            'days',
+            'attendances'
+        ));
     }
 
     public function create()
