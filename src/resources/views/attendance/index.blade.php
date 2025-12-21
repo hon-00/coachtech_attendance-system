@@ -28,7 +28,7 @@
         <tbody>
             @foreach($days as $day)
                 @php
-                    $attendance = $attendancesByDate[$day->toDateString()] ?? null;
+                    $attendance = $attendances[$day->toDateString()] ?? null;
                 @endphp
                 <tr class="content-table__row">
                     <td class="content-table__cell--date">
