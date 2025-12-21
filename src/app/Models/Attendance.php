@@ -93,9 +93,8 @@ class Attendance extends Model
 
     public function isPending()
     {
-        return $this->requests()
-            ->where('status', AttendanceRequest::STATUS_PENDING)
-            ->exists();
+        $latest = $this->requests()->latest()->first();
+        return $latest && $latest->status === AttendanceRequest::STATUS_PENDING;
     }
 
 }

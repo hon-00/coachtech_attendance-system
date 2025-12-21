@@ -1,13 +1,14 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\AttendanceRequestController;
-use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Admin\LoginController as AdminLoginController;
 use App\Http\Controllers\Admin\AttendanceController as AdminAttendanceController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\AttendanceRequestController as AdminAttendanceRequestController;
+use Illuminate\Http\Request;
 
 
 /*
@@ -21,7 +22,7 @@ use App\Http\Controllers\Admin\AttendanceRequestController as AdminAttendanceReq
 |
 */
 
-Route::middleware('auth')->group(function () {
+Route::middleware('auth:web')->group(function () {
 
     Route::prefix('attendance')->group(function () {
         Route::get('/', [AttendanceController::class, 'create'])
@@ -41,63 +42,25 @@ Route::middleware('auth')->group(function () {
 
         Route::get('/detail/{id}', [AttendanceController::class, 'show'])
             ->name('attendance.detail');
+
         Route::post('/request/{attendanceId}', [AttendanceRequestController::class, 'store'])
             ->name('attendance.request.store');
     });
 
-    Route::prefix('stamp_correction_request')->group(function () {
-        Route::get('/list', [AttendanceRequestController::class, 'index'])
-            ->name('attendance_request.index');
-    });
-
 });
 
-Route::prefix('admin')->group(function () {
-    Route::get('/login', [AdminLoginController::class, 'showLoginForm'])
-        ->name('admin.login');
+Route::get('/stamp_correction_request/list', function (\Illuminate\Http\Request $request) {
+    if (Auth::guard('admin')->check()) {
+        return app(\App\Http\Controllers\Admin\AttendanceRequestController::class)->index($request);
+    } elseif (Auth::guard('web')->check()) {
+        return app(\App\Http\Controllers\AttendanceRequestController::class)->index($request);
+    } else {
+        abort(403);
+    }
+})->name('stamp_correction_request.index');
 
-    Route::post('/login', [AdminLoginController::class, 'login'])
-        ->name('admin.login.submit');
+Route::get('/stamp_correction_request/approve/{attendance_correct_request}', [AdminAttendanceRequestController::class, 'show'])
+    ->name('stamp_correction_request.show');
 
-    Route::post('/logout', function () {
-        Auth::guard('admin')->logout();
-        return redirect()->route('admin.login');
-    })->name('admin.logout');
-});
-
-Route::middleware(['auth:admin', 'can:isAdmin'])->prefix('admin')->name('admin.')->group(function () {
-        Route::prefix('attendance')->name('attendance.')->group(function () {
-
-        Route::get('/list', [AdminAttendanceController::class, 'index'])
-            ->name('list');
-        Route::get('/staff/{id}', [AdminAttendanceController::class, 'staffMonthly'])
-            ->name('staff');
-        Route::get('/staff/{id}/csv', [AdminAttendanceController::class, 'exportCsv'])
-            ->name('staff.csv');
-
-        Route::get('/{attendance}', [AdminAttendanceController::class, 'show'])
-            ->name('show');
-        Route::put('/{attendance}', [AdminAttendanceController::class, 'update'])
-            ->name('update');
-        Route::get('/attendance/create', [App\Http\Controllers\Admin\AttendanceController::class, 'create'])
-            ->name('create');
-        Route::post('/attendance/store', [AdminAttendanceController::class, 'store'])
-            ->name('store');
-    });
-
-    Route::get('/attendance_request/list', [AdminAttendanceRequestController::class, 'index'])
-            ->name('attendance_request.index');
-
-    Route::get('/staff/list', [UserController::class, 'index'])
-        ->name('user.index');
-
-    Route::get(
-        '/attendance_request/approve/{attendance_correct_request}',
-        [AdminAttendanceRequestController::class, 'show']
-    )->name('attendance_request.show');
-    Route::post(
-        '/attendance_request/approve/{attendance_correct_request}',
-        [AdminAttendanceRequestController::class, 'approve']
-    )->name('attendance_request.approve');
-
-});
+Route::post('/stamp_correction_request/approve/{attendance_correct_request}', [AdminAttendanceRequestController::class, 'approve'])
+    ->name('stamp_correct_request.approve');

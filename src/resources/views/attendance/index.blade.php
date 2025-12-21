@@ -26,19 +26,25 @@
             </tr>
         </thead>
         <tbody>
-            @foreach($attendances as $attendance)
-            <tr class="content-table__row">
-                <td class="content-table__cell--date">{{ $attendance->work_date->format('m/d') }}({{ ['日','月','火','水','木','金','土'][$attendance->work_date->dayOfWeek] }})</td>
-                <td class="content-table__cell--start">{{ $attendance->clock_in?->format('H:i') ?? '' }}</td>
-                <td class="content-table__cell--end">{{ $attendance->clock_out?->format('H:i') ?? '' }}</td>
-                <td class="content-table__cell--break">{{ $attendance->formatted_break_total ?: '' }}</td>
-                <td class="content-table__cell--total">{{ $attendance->formatted_work_total ?: '' }}</td>
-                <td class="content-table__cell--detail">
-                    <a class="content-table__cell--detail-link" href="{{ route('attendance.detail', ['id' => $attendance->id]) }}">
-                        詳細
-                    </a>
-                </td>
-            </tr>
+            @foreach($days as $day)
+                @php
+                    $attendance = $attendances[$day->toDateString()] ?? null;
+                @endphp
+                <tr class="content-table__row">
+                    <td class="content-table__cell--date">
+                        {{ $day->format('m/d') }}({{ ['日','月','火','水','木','金','土'][$day->dayOfWeek] }})
+                    </td>
+                    <td class="content-table__cell--start">{{ $attendance?->clock_in?->format('H:i') ?? '' }}</td>
+                    <td class="content-table__cell--end">{{ $attendance?->clock_out?->format('H:i') ?? '' }}</td>
+                    <td class="content-table__cell--break">{{ $attendance?->formatted_break_total ?? '' }}</td>
+                    <td class="content-table__cell--total">{{ $attendance?->formatted_work_total ?? '' }}</td>
+                    <td class="content-table__cell--detail">
+                        <a class="content-table__cell--detail-link"
+                            href="{{ $attendance ? route('attendance.detail', ['id' => $attendance->id, 'date' => $day->toDateString()]) : route('attendance.detail', ['id' => 'new', 'date' => $day->toDateString()]) }}">
+                            詳細
+                        </a>
+                    </td>
+                </tr>
             @endforeach
         </tbody>
     </table>

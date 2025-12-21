@@ -25,10 +25,12 @@
                 <li class="header-nav__item">
                     <a class="header-nav__link" href="{{ route('admin.user.index') }}">スタッフ一覧</a>
                 </li>
-                <li class="header-nav__item">
-                    <a class="header-nav__link" href="{{ route('admin.attendance_request.index') }}">申請一覧</a>
-                </li>
-                @auth
+                @auth('admin')
+                    <li class="header-nav__item">
+                        <a class="header-nav__link" href="{{ route('stamp_correction_request.index') }}">申請一覧</a>
+                    </li>
+                @endauth
+                @auth('admin')
                     <li class="header-nav__item">
                         <form class="header-nav__form" method="POST" action="{{ route('admin.logout') }}">
                             @csrf

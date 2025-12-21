@@ -25,9 +25,11 @@
                 <li class="header-nav__item">
                     <a class="header-nav__link" href="{{ route('attendance.list') }}">勤怠一覧</a>
                 </li>
-                <li class="header-nav__item">
-                    <a class="header-nav__link" href="{{ route('attendance_request.index') }}">申請</a>
-                </li>
+                @auth('web')
+                    <li class="header-nav__item">
+                        <a class="header-nav__link" href="{{ route('stamp_correction_request.index') }}">申請</a>
+                    </li>
+                @endauth
                 @auth
                     <li class="header-nav__item">
                         <form class="header-nav__form" method="POST" action="{{ route('logout') }}">

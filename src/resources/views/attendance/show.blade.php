@@ -13,7 +13,7 @@
         $breakCount = $attendance->breakLogs->count();
     @endphp
 
-    <form class="content-detail" id="attendance-form" action="{{ route('attendance.request.store', ['attendanceId' => $attendance->id]) }}" method="POST">
+    <form class="content-detail" id="attendance-form" action="{{ $isNew ? route('attendance.request.store', ['attendanceId' => $attendance->id]) : route('attendance.request.store', ['attendanceId' => $attendance->id]) }}" method="POST">
         @csrf
         <input type="hidden" name="attendance_id" value="{{ $attendance->id }}">
 
@@ -36,7 +36,7 @@
                 <label class="content-detail__label">出勤・退勤</label>
 
                 @if($editable)
-                    <div class="content-detail__input-wrapper">
+                    <div class="content-detail__input-wrap">
                         <div class="content-detail__input-group">
                             <input class="content-detail__input" type="text" name="clock_in" value="{{ old('clock_in', $attendance->clock_in?->format('H:i')) }}">
                             <span class="content-detail__value--time">〜</span>
@@ -64,17 +64,17 @@
                     <label class="content-detail__label">休憩{{ $loop->iteration }}</label>
 
                     @if($editable)
-                        <div class="content-detail__input-wrapper">
+                        <div class="content-detail__input-wrap">
                             <div class="content-detail__input-group">
-                                <input class="content-detail__input" type="text" name="breaks[{{ $loop->index }}][break_start]" value="{{ old('breaks.' . $loop->index . '.break_start', optional($break->break_start)->format('H:i')) }}">
+                                <input class="content-detail__input" type="text" name="breaks[{{ $loop->index }}][start]" value="{{ old('breaks.' . $loop->index . '.start', optional($break->break_start)->format('H:i')) }}">
                                 <span class="content-detail__value--time">〜</span>
-                                <input class="content-detail__input" type="text" name="breaks[{{ $loop->index }}][break_end]" value="{{ old('breaks.' . $loop->index . '.break_end', optional($break->break_end)->format('H:i')) }}">
+                                <input class="content-detail__input" type="text" name="breaks[{{ $loop->index }}][end]" value="{{ old('breaks.' . $loop->index . '.end', optional($break->break_end)->format('H:i')) }}">
                             </div>
 
-                            @error("breaks.$loop->index.break_start")
+                            @error("breaks.$loop->index.start")
                                 <p class="content-form__error">{{ $message }}</p>
                             @enderror
-                            @error("breaks.$loop->index.break_end")
+                            @error("breaks.$loop->index.end")
                                 <p class="content-form__error">{{ $message }}</p>
                             @enderror
                         </div>
@@ -91,17 +91,17 @@
             @if($editable)
                 <div class="content-detail__row">
                     <label class="content-detail__label">休憩{{ $breakCount + 1 }}</label>
-                    <div class="content-detail__input-wrapper">
+                    <div class="content-detail__input-wrap">
                         <div class="content-detail__input-group">
-                            <input class="content-detail__input" type="text" name="breaks[new][break_start]" value="{{ old('breaks.new.break_start') }}">
+                            <input class="content-detail__input" type="text" name="breaks[new][start]" value="{{ old('breaks.new.start') }}">
                             <span class="content-detail__value--time">〜</span>
-                            <input class="content-detail__input" type="text" name="breaks[new][break_end]" value="{{ old('breaks.new.break_end') }}">
+                            <input class="content-detail__input" type="text" name="breaks[new][end]" value="{{ old('breaks.new.end') }}">
                         </div>
 
-                        @error("breaks.new.break_start")
+                        @error("breaks.new.start")
                             <p class="content-form__error">{{ $message }}</p>
                         @enderror
-                        @error("breaks.new.break_end")
+                        @error("breaks.new.end")
                             <p class="content-form__error">{{ $message }}</p>
                         @enderror
                     </div>
