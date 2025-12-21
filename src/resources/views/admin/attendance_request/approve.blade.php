@@ -45,12 +45,11 @@
                 <label class="content-detail__label">
                     休憩{{ $loop->iteration }}
                 </label>
-
                 <p class="content-detail__value">
                     {{ $break['start'] ?? '' }}
-                        @if(!empty($break['start']) && !empty($break['end']))
-                            <span class="content-detail__value--time">〜</span>
-                        @endif
+                    @if(!empty($break['start']) && !empty($break['end']))
+                        <span class="content-detail__value--time">〜</span>
+                    @endif
                     {{ $break['end'] ?? '' }}
                 </p>
             </div>
@@ -67,7 +66,7 @@
 
     <div class="content-detail__button">
         @if($attendanceRequest->status === \App\Models\AttendanceRequest::STATUS_PENDING)
-            <form method="POST" action="{{ route('admin.attendance_request.approve', $attendanceRequest->id) }}">
+            <form method="POST" action="{{ route('stamp_correct_request.approve', $attendanceRequest) }}">
                 @csrf
                 <button type="submit" class="button--approve">
                     承認
