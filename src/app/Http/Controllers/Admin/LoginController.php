@@ -21,4 +21,9 @@ class LoginController extends Controller
         return redirect()->route('admin.attendance.list');
     }
 
+    public function showLoginForm()
+    {
+        return view('admin.auth.login');
+    }
+
 }
