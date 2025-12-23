@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Carbon\Carbon;
 
 class AttendanceFactory extends Factory
 {
@@ -13,16 +14,23 @@ class AttendanceFactory extends Factory
      */
     public function definition()
     {
-        $clockIn = $this->faker->time('H:i:s', '09:00:00');
-        $clockOut = $this->faker->time('H:i:s', '18:00:00');
-        $breaks = rand(0, 60);
+        $date = Carbon::today()->subDays(rand(0, 30));
+
+        $clockIn = (clone $date)->setTime(8, 0)
+            ->addMinutes(rand(0, 300));
+
+        $clockOut = (clone $clockIn)->addMinutes(rand(360, 600));
+
+        if ($clockOut->gt((clone $date)->setTime(18, 0))) {
+            $clockOut = (clone $date)->setTime(18, 0);
+        }
 
         return [
-            'user_id' => \App\Models\User::factory(),
-            'work_date' => $this->faker->date(),
-            'clock_in' => $clockIn,
+            'user_id'   => \App\Models\User::factory(),
+            'work_date' => $date->toDateString(),
+            'clock_in'  => $clockIn,
             'clock_out' => $clockOut,
-            'status' => rand(1, 3),
+            'status'    => rand(1, 3),
         ];
     }
 }
