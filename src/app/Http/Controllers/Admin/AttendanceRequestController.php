@@ -33,16 +33,16 @@ class AttendanceRequestController extends Controller
         ]);
     }
 
-    public function show(AttendanceRequest $attendance_correct_request)
+    public function show(AttendanceRequest $attendance_correct_request_id)
     {
         return view('admin.attendance_request.approve', [
-            'attendanceRequest' => $attendance_correct_request
+            'attendanceRequest' => $attendance_correct_request_id
         ]);
     }
 
-    public function approve(AttendanceRequest $attendance_correct_request)
+    public function approve(AttendanceRequest $attendance_correct_request_id)
     {
-        $attendanceRequest = $attendance_correct_request;
+        $attendanceRequest = $attendance_correct_request_id;
 
         if ($attendanceRequest->status !== AttendanceRequest::STATUS_PENDING) {
             abort(404);
