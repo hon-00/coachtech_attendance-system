@@ -59,8 +59,8 @@ Route::get('/stamp_correction_request/list', function (\Illuminate\Http\Request 
     }
 })->name('stamp_correction_request.index');
 
-Route::get('/stamp_correction_request/approve/{attendance_correct_request}', [AdminAttendanceRequestController::class, 'show'])
+Route::get('/stamp_correction_request/approve/{attendance_correct_request_id}', [AdminAttendanceRequestController::class, 'show'])
     ->name('stamp_correction_request.show');
 
-Route::post('/stamp_correction_request/approve/{attendance_correct_request}', [AdminAttendanceRequestController::class, 'approve'])
+Route::post('/stamp_correction_request/approve/{attendance_correct_request_id}', [AdminAttendanceRequestController::class, 'approve'])
     ->name('stamp_correct_request.approve');
