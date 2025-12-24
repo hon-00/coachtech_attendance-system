@@ -19,17 +19,30 @@
         </div>
         <nav>
             <ul class="header-nav">
-                <li class="header-nav__item">
-                    <a class="header-nav__link" href="{{ route('attendance.create') }}">勤怠</a>
-                </li>
-                <li class="header-nav__item">
-                    <a class="header-nav__link" href="{{ route('attendance.list') }}">勤怠一覧</a>
-                </li>
-                @auth('web')
+                @if(isset($attendance) && $attendance->status === \App\Models\Attendance::STATUS_LEAVE)
                     <li class="header-nav__item">
-                        <a class="header-nav__link" href="{{ route('stamp_correction_request.index') }}">申請</a>
+                        <a class="header-nav__link header-nav__link--normal" href="{{ route('attendance.list') }}">
+                            今月の出勤一覧
+                        </a>
                     </li>
-                @endauth
+                    <li class="header-nav__item">
+                        <a class="header-nav__link header-nav__link--normal" href="{{ route('stamp_correction_request.index') }}">
+                            申請一覧
+                        </a>
+                    </li>
+                @else
+                    <li class="header-nav__item">
+                        <a class="header-nav__link header-nav__link--bold" href="{{ route('attendance.create') }}">勤怠</a>
+                    </li>
+                    <li class="header-nav__item">
+                        <a class="header-nav__link header-nav__link--bold" href="{{ route('attendance.list') }}">勤怠一覧</a>
+                    </li>
+                    @auth('web')
+                        <li class="header-nav__item">
+                            <a class="header-nav__link header-nav__link--bold" href="{{ route('stamp_correction_request.index') }}">申請</a>
+                        </li>
+                    @endauth
+                @endif
                 @auth
                     <li class="header-nav__item">
                         <form class="header-nav__form" method="POST" action="{{ route('logout') }}">
