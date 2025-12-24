@@ -13,11 +13,11 @@
         $breakCount = $attendance->breakLogs->count();
     @endphp
 
-    <form class="content-detail" id="attendance-form" action="{{ $isNew ? route('attendance.request.store', ['attendanceId' => $attendance->id]) : route('attendance.request.store', ['attendanceId' => $attendance->id]) }}" method="POST">
+    <form class="content-detail" id="attendance-form" action="{{ route('attendance.request.store', ['attendanceId' => $attendance->id]) }}" method="POST">
         @csrf
         <input type="hidden" name="attendance_id" value="{{ $attendance->id }}">
 
-        <div class="content-form__wrap">
+        <div class="content-detail__wrap">
 
             <div class="content-detail__row">
                 <label class="content-detail__label">名前</label>
