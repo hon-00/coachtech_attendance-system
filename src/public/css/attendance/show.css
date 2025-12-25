@@ -33,6 +33,13 @@
     border-radius: 8px;
 }
 
+.content-detail__wrap {
+    border: 3px solid #ddd;
+    font-size: 15px;
+    font-weight: 600;
+    overflow: hidden;
+}
+
 .content-detail__row {
     display: flex;
     align-items: center;
@@ -64,6 +71,19 @@
     letter-spacing: 0.12em;
 }
 
+.content-detail__text {
+    padding: 7px 0;
+    font-size: 13.5px;
+}
+
+.content-detail__text--year {
+    margin-right: 120px;
+}
+
+.content-detail__text--time,
+.content-detail__value--time {
+    padding: 55px;
+}
 
 .content-detail__input {
     width: 90px;
