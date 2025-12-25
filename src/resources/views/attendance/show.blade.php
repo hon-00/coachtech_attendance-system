@@ -39,7 +39,7 @@
                     <div class="content-detail__input-wrap">
                         <div class="content-detail__input-group">
                             <input class="content-detail__input" type="text" name="clock_in" value="{{ old('clock_in', $attendance->clock_in?->format('H:i')) }}">
-                            <span class="content-detail__value--time">〜</span>
+                            <span class="content-detail__text--time">〜</span>
                             <input class="content-detail__input" type="text" name="clock_out" value="{{ old('clock_out', $attendance->clock_out?->format('H:i')) }}">
                         </div>
 
@@ -67,7 +67,7 @@
                         <div class="content-detail__input-wrap">
                             <div class="content-detail__input-group">
                                 <input class="content-detail__input" type="text" name="breaks[{{ $loop->index }}][start]" value="{{ old('breaks.' . $loop->index . '.start', optional($break->break_start)->format('H:i')) }}">
-                                <span class="content-detail__value--time">〜</span>
+                                <span class="content-detail__text--time">〜</span>
                                 <input class="content-detail__input" type="text" name="breaks[{{ $loop->index }}][end]" value="{{ old('breaks.' . $loop->index . '.end', optional($break->break_end)->format('H:i')) }}">
                             </div>
 
@@ -94,7 +94,7 @@
                     <div class="content-detail__input-wrap">
                         <div class="content-detail__input-group">
                             <input class="content-detail__input" type="text" name="breaks[new][start]" value="{{ old('breaks.new.start') }}">
-                            <span class="content-detail__value--time">〜</span>
+                            <span class="content-detail__text--time">〜</span>
                             <input class="content-detail__input" type="text" name="breaks[new][end]" value="{{ old('breaks.new.end') }}">
                         </div>
 
