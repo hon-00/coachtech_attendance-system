@@ -8,7 +8,6 @@ use App\Models\Attendance;
 use App\Models\AttendanceRequest;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\Auth;
 
 class AttendanceRequestController extends Controller
 {
@@ -16,20 +15,20 @@ class AttendanceRequestController extends Controller
     {
         $tab = $request->get('tab', 'pending');
 
-        $pendingRequests = AttendanceRequest::with('user', 'attendance')
+        $pendingAdminRequests = AttendanceRequest::with('user', 'attendance')
             ->where('status', AttendanceRequest::STATUS_PENDING)
             ->orderBy('created_at', 'asc')
             ->get();
 
-        $approvedRequests = AttendanceRequest::with('user', 'attendance')
+        $approvedAdminRequests = AttendanceRequest::with('user', 'attendance')
             ->where('status', AttendanceRequest::STATUS_APPROVED)
             ->orderBy('created_at', 'asc')
             ->get();
 
         return view('admin.attendance_request.index', [
             'tab' => $tab,
-            'pendingAdminRequests'  => $pendingRequests,
-            'approvedAdminRequests' => $approvedRequests,
+            'pendingAdminRequests'  => $pendingAdminRequests,
+            'approvedAdminRequests' => $approvedAdminRequests,
         ]);
     }
 

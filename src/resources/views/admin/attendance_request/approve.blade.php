@@ -66,7 +66,7 @@
 
     <div class="content-detail__button">
         @if($attendanceRequest->status === \App\Models\AttendanceRequest::STATUS_PENDING)
-            <form method="POST" action="{{ route('stamp_correct_request.approve', $attendanceRequest) }}">
+            <form method="POST" action="{{ route('stamp_correction_request.approve', $attendanceRequest) }}">
                 @csrf
                 <button type="submit" class="button--approve">
                     承認
