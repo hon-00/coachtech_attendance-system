@@ -12,7 +12,7 @@
     <header class="header">
         <div class="header-inner">
             <h1 class="header-logo">
-                <a class="header-logo__link" href="">
+                <a class="header-logo__link" href="{{ route('login') }}">
                     <img class="header-logo__img" src="{{ asset('images/logo.svg') }}" alt="Logo" />
                 </a>
             </h1>

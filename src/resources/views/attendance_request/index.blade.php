@@ -72,7 +72,7 @@
                         <tr class="content-table__header">
                             <th class="content-table__status">状態</th>
                             <th class="content-table__name">名前</th>
-                            <th class="content-table__date">対象日</th>
+                            <th class="content-table__date">対象日時</th>
                             <th class="content-table__note">申請理由</th>
                             <th class="content-table__created">申請日時</th>
                             <th class="content-table__detail">詳細</th>

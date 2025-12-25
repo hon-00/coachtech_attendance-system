@@ -56,6 +56,10 @@
     color: gray;
 }
 
+.content-detail__text--year {
+    margin-right: 150px;
+}
+
 .content-detail__value {
     min-height: 40px;
     padding-top: 14px;
@@ -65,9 +69,8 @@
     letter-spacing: 0.13em;
 }
 
-.content-detail__text--time,
 .content-detail__value--time {
-    padding: 55px;
+    padding: 80px;
 }
 
 .content-detail__value--note {

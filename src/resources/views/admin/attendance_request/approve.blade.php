@@ -27,7 +27,8 @@
         <div class="content-detail__row">
             <label class="content-detail__label">日付</label>
             <p class="content-detail__value">
-                {{ $attendanceRequest->attendance->work_date->format('Y年m月d日') }}
+                <span class="content-detail__text--year">{{ $attendanceRequest->attendance->work_date->format('Y年') }}</span>
+                <span class="content-detail__text--date">{{ $attendanceRequest->attendance->work_date->format('m月d日') }}</span>
             </p>
         </div>
 
@@ -66,7 +67,7 @@
 
     <div class="content-detail__button">
         @if($attendanceRequest->status === \App\Models\AttendanceRequest::STATUS_PENDING)
-            <form method="POST" action="{{ route('stamp_correct_request.approve', $attendanceRequest) }}">
+            <form method="POST" action="{{ route('stamp_correction_request.approve', $attendanceRequest) }}">
                 @csrf
                 <button type="submit" class="button--approve">
                     承認

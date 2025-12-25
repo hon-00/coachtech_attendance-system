@@ -8,7 +8,6 @@ use App\Models\Attendance;
 use App\Models\AttendanceRequest;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\Auth;
 
 class AttendanceRequestController extends Controller
 {
@@ -16,33 +15,33 @@ class AttendanceRequestController extends Controller
     {
         $tab = $request->get('tab', 'pending');
 
-        $pendingRequests = AttendanceRequest::with('user', 'attendance')
+        $pendingAdminRequests = AttendanceRequest::with('user', 'attendance')
             ->where('status', AttendanceRequest::STATUS_PENDING)
             ->orderBy('created_at', 'asc')
             ->get();
 
-        $approvedRequests = AttendanceRequest::with('user', 'attendance')
+        $approvedAdminRequests = AttendanceRequest::with('user', 'attendance')
             ->where('status', AttendanceRequest::STATUS_APPROVED)
             ->orderBy('created_at', 'asc')
             ->get();
 
         return view('admin.attendance_request.index', [
             'tab' => $tab,
-            'pendingAdminRequests'  => $pendingRequests,
-            'approvedAdminRequests' => $approvedRequests,
+            'pendingAdminRequests'  => $pendingAdminRequests,
+            'approvedAdminRequests' => $approvedAdminRequests,
         ]);
     }
 
-    public function show(AttendanceRequest $attendance_correct_request)
+    public function show(AttendanceRequest $attendance_correct_request_id)
     {
         return view('admin.attendance_request.approve', [
-            'attendanceRequest' => $attendance_correct_request
+            'attendanceRequest' => $attendance_correct_request_id
         ]);
     }
 
-    public function approve(AttendanceRequest $attendance_correct_request)
+    public function approve(AttendanceRequest $attendance_correct_request_id)
     {
-        $attendanceRequest = $attendance_correct_request;
+        $attendanceRequest = $attendance_correct_request_id;
 
         if ($attendanceRequest->status !== AttendanceRequest::STATUS_PENDING) {
             abort(404);

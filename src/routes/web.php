@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\LoginController as AdminLoginController;
 use App\Http\Controllers\Admin\AttendanceController as AdminAttendanceController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\AttendanceRequestController as AdminAttendanceRequestController;
+use App\Http\Controllers\StampRequestRouter;
 use Illuminate\Http\Request;
 
 
@@ -49,18 +50,14 @@ Route::middleware('auth:web')->group(function () {
 
 });
 
-Route::get('/stamp_correction_request/list', function (\Illuminate\Http\Request $request) {
-    if (Auth::guard('admin')->check()) {
-        return app(\App\Http\Controllers\Admin\AttendanceRequestController::class)->index($request);
-    } elseif (Auth::guard('web')->check()) {
-        return app(\App\Http\Controllers\AttendanceRequestController::class)->index($request);
-    } else {
-        abort(403);
-    }
-})->name('stamp_correction_request.index');
+Route::middleware('auth.user_or_admin')->group(function () {
 
-Route::get('/stamp_correction_request/approve/{attendance_correct_request}', [AdminAttendanceRequestController::class, 'show'])
-    ->name('stamp_correction_request.show');
+    Route::get('/stamp_correction_request/list', [StampRequestRouter::class, 'index'])
+        ->name('stamp_correction_request.index');
 
-Route::post('/stamp_correction_request/approve/{attendance_correct_request}', [AdminAttendanceRequestController::class, 'approve'])
-    ->name('stamp_correct_request.approve');
+    Route::get('/stamp_correction_request/show/{id}', [StampRequestRouter::class, 'show'])
+        ->name('stamp_correction_request.show');
+
+    Route::post('/stamp_correction_request/approve/{id}', [StampRequestRouter::class, 'approve'])
+        ->name('stamp_correction_request.approve');
+});
