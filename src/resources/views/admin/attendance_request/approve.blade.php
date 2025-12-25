@@ -27,7 +27,8 @@
         <div class="content-detail__row">
             <label class="content-detail__label">日付</label>
             <p class="content-detail__value">
-                {{ $attendanceRequest->attendance->work_date->format('Y年m月d日') }}
+                <span class="content-detail__text--year">{{ $attendanceRequest->attendance->work_date->format('Y年') }}</span>
+                <span class="content-detail__text--date">{{ $attendanceRequest->attendance->work_date->format('m月d日') }}</span>
             </p>
         </div>
 
