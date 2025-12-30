@@ -15,9 +15,22 @@ class AttendanceController extends Controller
     public function index(Request $request)
     {
         $user = $request->user();
+        if (! $user) {
+            abort(403);
+        }
 
-        $monthParam = $request->get('month', now()->format('Y-m'));
-        $currentTime = Carbon::parse($monthParam . '-01');
+        $monthParam = $request->query('month', now()->format('Y-m'));
+
+        if (! preg_match('/^\d{4}-\d{2}$/', $monthParam)) {
+            abort(404);
+        }
+
+        try {
+            $currentTime = Carbon::createFromFormat('Y-m', $monthParam)->startOfMonth();
+        } catch (\Exception $e) {
+            abort(404);
+        }
+
         $prevMonth = $currentTime->copy()->subMonth()->format('Y-m');
         $nextMonth = $currentTime->copy()->addMonth()->format('Y-m');
 
