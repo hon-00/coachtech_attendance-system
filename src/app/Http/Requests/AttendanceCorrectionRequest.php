@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Carbon\Carbon;
 
 class AttendanceCorrectionRequest extends FormRequest
 {
@@ -60,50 +61,69 @@ class AttendanceCorrectionRequest extends FormRequest
     public function withValidator($validator)
     {
         $validator->after(function ($validator) {
-            $clockIn  = $this->input('clock_in');
-            $clockOut = $this->input('clock_out');
-            $breaks   = $this->input('breaks', []);
+            $clockInValue  = $this->input('clock_in');
+            $clockOutValue = $this->input('clock_out');
 
-            if ($clockIn >= $clockOut) {
-                $validator->errors()->add(
-                    'clock_in',
-                    '出勤時間もしくは退勤時間が不適切な値です'
-                );
-            }
+            if ($clockInValue && $clockOutValue) {
+                $clockIn  = Carbon::createFromFormat('H:i', $clockInValue);
+                $clockOut = Carbon::createFromFormat('H:i', $clockOutValue);
 
-            $allBreaks = array_merge(
-                $this->input('breaks', []),
-                ['new' => $this->input('breaks.new', [])]
-            );
-
-            foreach ($allBreaks as $key => $b) {
-                $start = $b['start'] ?? null;
-                $end   = $b['end'] ?? null;
-
-                if ($start) {
-                    if ($clockIn && $clockOut && ($start < $clockIn || $start > $clockOut)) {
-                        $validator->errors()->add(
-                            "breaks.$key.start",
-                            '休憩時間が不適切な値です'
-                        );
-                    }
+                if ($clockIn->gte($clockOut)) {
+                    $validator->errors()->add(
+                        'clock_in',
+                        '出勤時間もしくは退勤時間が不適切な値です'
+                    );
                 }
 
-                if ($end) {
-                    if ($clockOut && $end > $clockOut) {
-                        $validator->errors()->add(
-                            "breaks.$key.end",
-                            '休憩時間もしくは退勤時間が不適切な値です'
-                        );
+                $breaks = $this->input('breaks', []);
+                $newBreak = $this->input('breaks.new', []);
+                $allBreaks = $breaks;
+
+                if (!empty($newBreak)) {
+                    $allBreaks['new'] = $newBreak;
+                }
+
+                foreach ($allBreaks as $key => $b) {
+                    $startKey = is_numeric($key) ? "breaks.$key.start" : "breaks.new.start";
+                    $endKey   = is_numeric($key) ? "breaks.$key.end"   : "breaks.new.end";
+
+                    $startValue = $b['start'] ?? '';
+                    $endValue   = $b['end'] ?? '';
+
+                    // Carbon 比較（空文字でない場合のみ）
+                    $start = $startValue !== '' ? Carbon::createFromFormat('H:i', $startValue) : null;
+                    $end   = $endValue   !== '' ? Carbon::createFromFormat('H:i', $endValue)   : null;
+
+                    if ($start && ($start->lt($clockIn) || $start->gt($clockOut))) {
+                        $validator->errors()->add($startKey, '休憩時間が不適切な値です');
                     }
-                    if ($start && $end <= $start) {
-                        $validator->errors()->add(
-                            "breaks.$key.end",
-                            '休憩時間が不適切な値です'
-                        );
+                    if ($end && ($end->gt($clockOut) || $end->lt($clockIn) || ($start && $end->lte($start)))) {
+                        $validator->errors()->add($endKey, '休憩時間が不適切な値です');
                     }
                 }
             }
         });
+    }
+
+    protected function prepareForValidation()
+    {
+        $breaks = $this->input('breaks', []);
+        foreach ($breaks as $key => $b) {
+            $breaks[$key] = [
+                'start' => $b['start'] ?? '',
+                'end'   => $b['end'] ?? '',
+            ];
+        }
+
+        $newBreak = $this->input('breaks.new', []);
+        $newBreak = [
+            'start' => $newBreak['start'] ?? '',
+            'end'   => $newBreak['end'] ?? '',
+        ];
+
+        $this->merge([
+            'breaks' => $breaks,
+            'breaks.new' => $newBreak,
+        ]);
     }
 }
