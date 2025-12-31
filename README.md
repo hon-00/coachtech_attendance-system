@@ -1,8 +1,8 @@
 # coachtech_attendance-system
 
 ## アプリ概要
-一般ユーザーと管理者ユーザーを持つ勤怠管理アプリケーション。  
-一般ユーザーは勤怠の打刻・確認・修正申請を行い、管理者は勤怠・スタッフ・修正申請を管理および承認する。
+一般ユーザーと管理者ユーザーを持つ勤怠管理アプリケーションです。  
+一般ユーザーは勤怠の打刻・確認・修正申請を行い、管理者は勤怠・スタッフ・修正申請を管理および承認します。
 
 ---
 
@@ -13,7 +13,8 @@
 
 ## Laravel環境構築
 - docker-compose exec php bash
-※ Laravel プロジェクトは src ディレクトリ配下に構築されており、PHPコンテナ内では /var/www/html にマウントされています。
+※ 以降の作業は PHP コンテナ内で実行します。
+  Laravel プロジェクトは src ディレクトリ配下に構築されており、PHPコンテナ内では /var/www/html にマウントされています。
 
 - composer install
 - cp .env.example .env
@@ -34,3 +35,6 @@
 - Nginx 1.21.1
 - Composer 2.x
 - Docker / docker-compose
+
+## ER図
+<img width="1298" height="1590" alt="勤怠管理 drawio" src="https://github.com/user-attachments/assets/21e4ed72-348a-4549-8369-c8112933b8e9" />
