@@ -7,7 +7,7 @@ use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\AttendanceRequestController as AdminAttendanceRequestController;
 
 Route::prefix('admin')->group(function () {
-    Route::get('/login', [\Laravel\Fortify\Http\Controllers\AuthenticatedSessionController::class, 'create'])->name('login');
+    Route::get('/login', [\Laravel\Fortify\Http\Controllers\AuthenticatedSessionController::class, 'create'])->name('admin.login');
     Route::post('/login', [\Laravel\Fortify\Http\Controllers\AuthenticatedSessionController::class, 'store'])->name('admin.login.submit');
     Route::post('/logout', function () {
         \Illuminate\Support\Facades\Auth::guard('admin')->logout();
