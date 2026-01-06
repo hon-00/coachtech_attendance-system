@@ -42,7 +42,7 @@ class AdminLoginRequest extends FormRequest
         return [
             'email.required'    => 'メールアドレスを入力してください',
             'email.email'       => 'メールアドレスの形式が誤っています',
-            'email.exists'      => '管理者として登録されていません',
+            'email.exists'      => 'ログイン情報が登録されていません',
             'password.required' => 'パスワードを入力してください',
             'password.min'      => 'パスワードは8文字以上で入力してください',
         ];
