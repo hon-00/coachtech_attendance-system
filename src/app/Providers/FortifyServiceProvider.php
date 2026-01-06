@@ -40,9 +40,12 @@ class FortifyServiceProvider extends ServiceProvider
                 return null;
             }
 
-            if ($request->routeIs('admin.login.submit') && $user->role === User::ROLE_ADMIN) {
-                Auth::guard('admin')->login($user);
-                return $user;
+            if ($request->routeIs('admin.login.submit')) {
+                if ($user->role === User::ROLE_ADMIN) {
+                    Auth::guard('admin')->login($user);
+                    return $user;
+                }
+                return null;
             }
 
             if ($request->routeIs('login') && $user->role === User::ROLE_USER) {
