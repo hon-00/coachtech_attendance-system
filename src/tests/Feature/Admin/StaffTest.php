@@ -131,7 +131,9 @@ class AdminStaffTest extends TestCase
 
         $response = $this
             ->actingAs($admin, 'admin')
-            ->get(route('admin.attendance.staff', ['id' => $user->id]));
+            ->get(route('admin.attendance.staff', ['id' => $user->id,'month' => '2025-12',]));
+
+        $response->assertStatus(200);
 
         $response->assertSee(route('admin.attendance.show', ['attendance' => $attendance->id]));
     }
