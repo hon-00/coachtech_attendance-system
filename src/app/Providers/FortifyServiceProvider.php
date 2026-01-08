@@ -53,7 +53,7 @@ class FortifyServiceProvider extends ServiceProvider
                 return null;
             }
 
-            if ($request->routeIs('login') && $user->role === User::ROLE_USER) {
+            if ($user->role === User::ROLE_USER) {
                 return $user;
             }
 
