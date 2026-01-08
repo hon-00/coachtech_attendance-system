@@ -170,18 +170,18 @@ class AttendanceController extends Controller
             'Content-Disposition' => "attachment; filename={$filename}",
         ];
 
-        $callback = function() use ($attendances) {
+        $callback = function () use ($attendances) {
             $handle = fopen('php://output', 'w');
             fputcsv($handle, ['日付', '出勤', '退勤', '休憩', '合計', '備考']);
 
-            foreach ($attendances as $a) {
+            foreach ($attendances as $attendance) {
                 fputcsv($handle, [
-                    $a->work_date->format('Y-m-d'),
-                    $a->clock_in?->format('H:i') ?? '',
-                    $a->clock_out?->format('H:i') ?? '',
-                    $a->formatted_break_total ?? '',
-                    $a->formatted_work_total ?? '',
-                    $a->note ?? '',
+                    $attendance->work_date->format('Y-m-d'),
+                    $attendance->clock_in?->format('H:i') ?? '',
+                    $attendance->clock_out?->format('H:i') ?? '',
+                    $attendance->formatted_break_total ?? '',
+                    $attendance->formatted_work_total ?? '',
+                    $attendance->note ?? '',
                 ]);
             }
 
